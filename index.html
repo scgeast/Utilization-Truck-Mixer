@@ -595,6 +595,16 @@
                             <h2>📊 Avg Trip/Day per Truck</h2>
                             <div class="chart-container" id="avgTripDayChartBig"></div>
                         </div>
+                        <!-- NEW: Total Distance Chart for TM Big -->
+                        <div class="chart-section">
+                            <h2>📍 Total Distance per Truck</h2>
+                            <div class="chart-container" id="totalDistanceChartBig"></div>
+                        </div>
+                        <!-- NEW: Avg Distance Chart for TM Big (Terpisah) -->
+                        <div class="chart-section">
+                            <h2>📏 Avg Distance per Trip per Truck</h2>
+                            <div class="chart-container" id="avgDistanceChartBig"></div>
+                        </div>
                     </div>
                     <!-- Data Table -->
                     <div class="table-section">
@@ -655,6 +665,11 @@
                         <div class="chart-section">
                             <h2>🏭 Total Volume x Total Trip By Allocation Truck</h2>
                             <div class="chart-container" id="allocationChartMini"></div>
+                        </div>
+                        <!-- NEW: Distance Chart for TM Mini (Tanpa Secondary Axis) -->
+                        <div class="chart-section">
+                            <h2>📍 Total Distance & Avg Distance per Truck</h2>
+                            <div class="chart-container" id="distanceChartMini"></div>
                         </div>
                     </div>
                     <!-- Data Table -->
@@ -838,6 +853,7 @@
             const qtyIndex = headers.findIndex(h => h.includes('QTY') || h.includes('Quantity') || h.includes('Qty'));
             const siteNoIndex = headers.findIndex(h => h.includes('Site') && h.includes('No'));
             const siteNameIndex = headers.findIndex(h => h.includes('Site') && h.includes('Name'));
+            const distanceIndex = headers.findIndex(h => h.includes('Distance') || h.includes('Jarak'));
             
             const finalIndices = {
                 dpNo: dpNoIndex !== -1 ? dpNoIndex : 0,
@@ -847,7 +863,8 @@
                 allocation: allocationIndex !== -1 ? allocationIndex : 17,
                 qty: qtyIndex !== -1 ? qtyIndex : 15,
                 siteNo: siteNoIndex !== -1 ? siteNoIndex : 19,
-                siteName: siteNameIndex !== -1 ? siteNameIndex : 20
+                siteName: siteNameIndex !== -1 ? siteNameIndex : 20,
+                distance: distanceIndex !== -1 ? distanceIndex : 21 // Kolom V (Distance)
             };
             console.log('Column indices:', finalIndices);
             for (let i = 1; i < excelData.length; i++) {
@@ -861,6 +878,7 @@
                 const qty = row[finalIndices.qty];
                 const siteNo = row[finalIndices.siteNo];
                 const siteName = row[finalIndices.siteName];
+                const distance = row[finalIndices.distance];
                 
                 if (truckType && allocation && qty !== undefined && qty !== null && qty !== '') {
                     data.push({
@@ -870,7 +888,8 @@
                         'Site No': siteNo ? siteNo.toString().trim() : '-',
                         'Site Name': siteName ? siteName.toString().trim() : '-',
                         'Qty': parseFloat(qty) || 0,
-                        'Truck Type': truckType.toString().trim()
+                        'Truck Type': truckType.toString().trim(),
+                        'Distance': parseFloat(distance) || 0
                     });
                 }
             }
@@ -1021,6 +1040,7 @@
                 allocationBreakdown: {},
                 tripsByAllocation: {},
                 qtyByAllocation: {},
+                distanceByTruckNo: {}, // NEW: Menyimpan total jarak per truck
                 uniqueTrucks: { 'TM Big': new Set(), 'TM Mini': new Set() } // Untuk Total Truck
             };
             data.forEach(row => {
@@ -1029,6 +1049,7 @@
                 const allocation = row['Allocation Truck'];
                 const qty = parseFloat(row['Qty']) || 0;
                 const date = row['Date'];
+                const distance = parseFloat(row['Distance']) || 0; // NEW: Ambil jarak
                 if (!truckType || !allocation) return;
                 // Track unique trucks
                 analysis.uniqueTrucks[truckType].add(truckNo);
@@ -1050,6 +1071,11 @@
                     analysis.qtyByTruckNo[truckNo] = 0;
                 }
                 analysis.qtyByTruckNo[truckNo] += qty;
+                // NEW: Distance by truck number (dikalikan 2 karena pergi-pulang)
+                if (!analysis.distanceByTruckNo[truckNo]) {
+                    analysis.distanceByTruckNo[truckNo] = 0;
+                }
+                analysis.distanceByTruckNo[truckNo] += distance * 2;
                 // Trips by allocation
                 if (!analysis.tripsByAllocation[allocation]) {
                     analysis.tripsByAllocation[allocation] = 0;
@@ -1111,6 +1137,14 @@
                 const daysActive = uniqueDaysForTruck.size;
                 analysis.avgTripPerDayByTruckNo[truckNo] = daysActive > 0 ? (truckData.trips / daysActive).toFixed(2) : 0;
             }
+            // NEW: Calculate average distance per trip for each truck number
+            analysis.avgDistanceByTruckNo = {};
+            for (const truckNo in analysis.tripsByTruckNo) {
+                const truckData = analysis.tripsByTruckNo[truckNo];
+                analysis.avgDistanceByTruckNo[truckNo] = truckData.trips > 0 ? 
+                    (analysis.distanceByTruckNo[truckNo] / truckData.trips).toFixed(2) : '0';
+            }
+            
             analysis.totalVolume = (analysis.totalQty['TM Big'] + analysis.totalQty['TM Mini']).toFixed(1);
             analysis.totalTripsAll = analysis.totalTrips['TM Big'] + analysis.totalTrips['TM Mini'];
             return analysis;
@@ -1157,7 +1191,9 @@
                     volume: analysis.qtyByTruckNo[truckNo],
                     trips: analysis.tripsByTruckNo[truckNo].trips,
                     avgLoad: analysis.avgLoadByTruckNo[truckNo],
-                    avgTripPerDay: analysis.avgTripPerDayByTruckNo[truckNo]
+                    avgTripPerDay: analysis.avgTripPerDayByTruckNo[truckNo],
+                    totalDistance: analysis.distanceByTruckNo[truckNo], // NEW
+                    avgDistance: analysis.avgDistanceByTruckNo[truckNo] // NEW
                 })).sort((a, b) => b.volume - a.volume);
 
                 const sortedTruckNos = sortedData.map(item => item.truckNo);
@@ -1296,7 +1332,9 @@
                     volume: analysis.qtyByTruckNo[truckNo],
                     trips: analysis.tripsByTruckNo[truckNo].trips,
                     avgLoad: analysis.avgLoadByTruckNo[truckNo],
-                    avgTripPerDay: analysis.avgTripPerDayByTruckNo[truckNo]
+                    avgTripPerDay: analysis.avgTripPerDayByTruckNo[truckNo],
+                    totalDistance: analysis.distanceByTruckNo[truckNo], // NEW
+                    avgDistance: analysis.avgDistanceByTruckNo[truckNo] // NEW
                 })).sort((a, b) => b.trips - a.trips);
 
                 const sortedTruckNos = sortedData.map(item => item.truckNo);
@@ -1359,7 +1397,9 @@
                     volume: analysis.qtyByTruckNo[truckNo],
                     trips: analysis.tripsByTruckNo[truckNo].trips,
                     avgLoad: analysis.avgLoadByTruckNo[truckNo],
-                    avgTripPerDay: analysis.avgTripPerDayByTruckNo[truckNo]
+                    avgTripPerDay: analysis.avgTripPerDayByTruckNo[truckNo],
+                    totalDistance: analysis.distanceByTruckNo[truckNo], // NEW
+                    avgDistance: analysis.avgDistanceByTruckNo[truckNo] // NEW
                 })).sort((a, b) => b.avgLoad - a.avgLoad);
 
                 const sortedTruckNos = sortedData.map(item => item.truckNo);
@@ -1397,7 +1437,9 @@
                     volume: analysis.qtyByTruckNo[truckNo],
                     trips: analysis.tripsByTruckNo[truckNo].trips,
                     avgLoad: analysis.avgLoadByTruckNo[truckNo],
-                    avgTripPerDay: analysis.avgTripPerDayByTruckNo[truckNo]
+                    avgTripPerDay: analysis.avgTripPerDayByTruckNo[truckNo],
+                    totalDistance: analysis.distanceByTruckNo[truckNo], // NEW
+                    avgDistance: analysis.avgDistanceByTruckNo[truckNo] // NEW
                 })).sort((a, b) => b.avgTripPerDay - a.avgTripPerDay);
 
                 const sortedTruckNos = sortedData.map(item => item.truckNo);
@@ -1425,6 +1467,185 @@
                     height: 350,
                     responsive: true
                 });
+            }
+
+            // --- NEW: Chart 5: Total Distance per Truck No (TM Big only) ---
+            if (isBig) {
+                // Sort data dari terbesar ke terkecil untuk total distance
+                const distanceData = truckNos.map(truckNo => ({
+                    truckNo,
+                    totalDistance: analysis.distanceByTruckNo[truckNo],
+                    avgDistance: analysis.avgDistanceByTruckNo[truckNo]
+                })).sort((a, b) => b.totalDistance - a.totalDistance);
+                
+                const sortedTruckNosDistance = distanceData.map(item => item.truckNo);
+                const sortedTotalDistances = distanceData.map(item => item.totalDistance);
+                
+                const totalDistanceColors = sortedTruckNosDistance.map(truckNo => {
+                    if (truckNo === 'A448') return '#FFD700';
+                    if (truckNo === 'A969') return '#FF6347';
+                    return '#3498db';
+                });
+                
+                const totalDistanceTrace = {
+                    x: sortedTruckNosDistance,
+                    y: sortedTotalDistances,
+                    type: 'bar',
+                    name: 'Total Distance (km)',
+                    marker: { 
+                        color: totalDistanceColors,
+                        gradient: {
+                            type: 'vertical',
+                            color: ['#3498db', '#9b59b6']
+                        }
+                    },
+                    text: sortedTotalDistances.map(d => d.toLocaleString(undefined, {maximumFractionDigits: 1}) + ' km'),
+                    textposition: 'auto',
+                    textfont: { color: 'white', size: 10 }
+                };
+
+                const totalDistanceLayout = {
+                    yaxis: { 
+                        title: 'Total Distance (km)'
+                    },
+                    xaxis: { title: 'Truck No', tickangle: -45 },
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    height: 350,
+                    responsive: true
+                };
+
+                Plotly.newPlot(`totalDistanceChartBig`, [totalDistanceTrace], totalDistanceLayout);
+            }
+
+            // --- NEW: Chart 6: Avg Distance per Truck No (TM Big only) ---
+            if (isBig) {
+                // Sort data dari terbesar ke terkecil untuk avg distance
+                const avgDistanceData = truckNos.map(truckNo => ({
+                    truckNo,
+                    totalDistance: analysis.distanceByTruckNo[truckNo],
+                    avgDistance: analysis.avgDistanceByTruckNo[truckNo]
+                })).sort((a, b) => b.avgDistance - a.avgDistance);
+                
+                const sortedTruckNosAvgDistance = avgDistanceData.map(item => item.truckNo);
+                const sortedAvgDistances = avgDistanceData.map(item => item.avgDistance);
+                
+                const avgDistanceColors = sortedTruckNosAvgDistance.map(truckNo => {
+                    if (truckNo === 'A448') return '#FFD700';
+                    if (truckNo === 'A969') return '#FF6347';
+                    return '#e74c3c';
+                });
+                
+                const avgDistanceTrace = {
+                    x: sortedTruckNosAvgDistance,
+                    y: sortedAvgDistances,
+                    type: 'bar',
+                    name: 'Avg Distance per Trip (km)',
+                    marker: { 
+                        color: avgDistanceColors,
+                        gradient: {
+                            type: 'vertical',
+                            color: ['#e74c3c', '#f39c12']
+                        }
+                    },
+                    text: sortedAvgDistances.map(avg => parseFloat(avg).toFixed(2) + ' km'),
+                    textposition: 'auto',
+                    textfont: { color: 'white', size: 10 }
+                };
+
+                const avgDistanceLayout = {
+                    yaxis: { 
+                        title: 'Avg Distance per Trip (km)'
+                    },
+                    xaxis: { title: 'Truck No', tickangle: -45 },
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    height: 350,
+                    responsive: true
+                };
+
+                Plotly.newPlot(`avgDistanceChartBig`, [avgDistanceTrace], avgDistanceLayout);
+            }
+
+            // --- NEW: Chart 7: Distance Chart for TM Mini (Tanpa Secondary Axis) ---
+            if (!isBig) {
+                const totalDistances = truckNos.map(truckNo => analysis.distanceByTruckNo[truckNo]);
+                const avgDistances = truckNos.map(truckNo => analysis.avgDistanceByTruckNo[truckNo]);
+                
+                // Sort data dari terbesar ke terkecil untuk total distance
+                const distanceData = truckNos.map((truckNo, index) => ({
+                    truckNo,
+                    totalDistance: totalDistances[index],
+                    avgDistance: avgDistances[index]
+                })).sort((a, b) => b.totalDistance - a.totalDistance);
+                
+                const sortedTruckNosDistance = distanceData.map(item => item.truckNo);
+                const sortedTotalDistances = distanceData.map(item => item.totalDistance);
+                const sortedAvgDistances = distanceData.map(item => item.avgDistance);
+                
+                // Trace untuk Total Distance (Bar Chart)
+                const totalDistanceTrace = {
+                    x: sortedTruckNosDistance,
+                    y: sortedTotalDistances,
+                    type: 'bar',
+                    name: 'Total Distance (km)',
+                    marker: { 
+                        color: '#FFA500',
+                        gradient: {
+                            type: 'vertical',
+                            color: ['#FFA500', '#FF8C00'] // Gradient dari Orange ke Orange tua
+                        }
+                    },
+                    text: sortedTotalDistances.map(d => d.toLocaleString(undefined, {maximumFractionDigits: 1}) + ' km'),
+                    textposition: 'auto',
+                    textfont: { color: 'white', size: 10 }
+                };
+
+                // Trace untuk Avg Distance (Line Chart dengan dash)
+                const avgDistanceTrace = {
+                    x: sortedTruckNosDistance,
+                    y: sortedAvgDistances,
+                    type: 'scatter',
+                    mode: 'lines+markers+text',
+                    name: 'Avg Distance per Trip (km)',
+                    line: {
+                        color: '#9B59B6', // Ganti dengan warna Ungu
+                        width: 3,
+                        dash: 'dash'
+                    },
+                    marker: {
+                        color: '#9B59B6', // Ganti dengan warna Ungu
+                        size: 8
+                    },
+                    text: sortedAvgDistances.map(avg => parseFloat(avg).toFixed(2) + ' km'),
+                    textposition: 'top center',
+                    textfont: { 
+                        color: '#000000',
+                        size: 13, 
+                        weight: 'bold',
+                        family: 'Arial, sans-serif'
+                    }
+                };
+
+                const distanceLayout = {
+                    yaxis: { 
+                        title: 'Distance (km)'
+                    },
+                    xaxis: { title: 'Truck No', tickangle: -45 },
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    height: 350,
+                    responsive: true,
+                    barmode: 'group',
+                    legend: {
+                        orientation: 'h',
+                        y: 1.25,
+                        x: 0.5,
+                        xanchor: 'center'
+                    }
+                };
+
+                Plotly.newPlot(`distanceChartMini`, [totalDistanceTrace, avgDistanceTrace], distanceLayout);
             }
 
             // --- Additional Chart for TM Mini - Allocation Truck (Corrected) ---
@@ -1640,6 +1861,7 @@
                             <th onclick="sortTable(3, '${tabType}')">Site No</th>
                             <th onclick="sortTable(4, '${tabType}')">Site Name</th>
                             <th onclick="sortTable(5, '${tabType}')">Qty (m³)</th>
+                            <th onclick="sortTable(6, '${tabType}')">Distance (km)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1654,6 +1876,7 @@
                         <td>${row['Site No']}</td>
                         <td>${row['Site Name']}</td>
                         <td>${parseFloat(row['Qty']).toFixed(1)}</td>
+                        <td>${parseFloat(row['Distance']).toFixed(1)}</td>
                     </tr>
                 `;
             });
