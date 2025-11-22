@@ -368,6 +368,21 @@
         .hidden {
             display: none;
         }
+        /* Footer Styles - BARU DITAMBAHKAN */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .footer p {
+            margin: 0;
+            font-weight: 500;
+        }
         /* Responsive Design */
         @media (max-width: 1200px) {
             .chart-section {
@@ -424,6 +439,10 @@
             .table-filter .filter-group {
                 min-width: 100%;
             }
+            .footer {
+                padding: 12px 15px;
+                font-size: 0.85em;
+            }
         }
         @media (max-width: 480px) {
             .dashboard {
@@ -458,6 +477,10 @@
             .header-info {
                 margin-left: 0;
                 margin-top: 10px;
+            }
+            .footer {
+                padding: 10px 12px;
+                font-size: 0.8em;
             }
         }
     </style>
@@ -516,7 +539,7 @@
         <div class="main-content" id="mainContent">
             <!-- Header -->
             <div class="header">
-                <h1>🚛 Monitoring Truck Mixer Utilization East All Area</h1>
+                <h1>🚛 Truck Mixer Utilization East All Area</h1>
                 <div class="header-info">
                     <p>Period: <span id="periodeInfo">-</span></p>
                 </div>
@@ -587,6 +610,10 @@
                         </div>
                         <div id="dataTableContainerBig"></div>
                     </div>
+                    <!-- Footer untuk TM Big -->
+                    <div class="footer">
+                        <p>Truck Mixer Utilization East All Area Created By Kim Jong Un CDC East</p>
+                    </div>
                 </div>
                 <!-- TM Mini Tab Content -->
                 <div id="tab-mini" class="tab-content">
@@ -643,6 +670,10 @@
                             <button class="upload-btn" onclick="resetTableFilters()" style="width: auto; margin-top: 20px;">Reset Table Filter</button>
                         </div>
                         <div id="dataTableContainerMini"></div>
+                    </div>
+                    <!-- Footer untuk TM Mini -->
+                    <div class="footer">
+                        <p>Monitoring Truck Mixer utilization East All Area Created By Kim Jong Un CDC East</p>
                     </div>
                 </div>
             </div>
