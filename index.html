@@ -516,7 +516,7 @@
         <div class="main-content" id="mainContent">
             <!-- Header -->
             <div class="header">
-                <h1>🚛 Truck Mixer Usage Monitoring</h1>
+                <h1>🚛 Monitoring Truck Mixer utilization ~ East All Area</h1>
                 <div class="header-info">
                     <p>Period: <span id="periodeInfo">-</span></p>
                 </div>
@@ -1302,7 +1302,13 @@
                     x: truckNos,
                     y: avgLoads,
                     type: 'bar',
-                    marker: { color: color2 },
+                    marker: { 
+                        color: '#27ae60', // Warna hijau untuk avg load
+                        gradient: {
+                            type: 'vertical',
+                            color: ['#27ae60', '#f39c12'] // Gradient dari hijau ke orange
+                        }
+                    },
                     text: avgLoads.map(load => parseFloat(load).toFixed(2) + ' m³'),
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
@@ -1424,26 +1430,38 @@
                     totalTrips > 0 ? ((trips / totalTrips) * 100).toFixed(1) : 0
                 );
 
-                // Trace untuk Volume (Bar Chart)
+                // Trace untuk Volume (Bar Chart) - Diperbarui: biru gradient ke ungu
                 const allocationTrace1 = {
                     x: allocations,
                     y: qtyByAllocation,
                     type: 'bar',
                     name: 'Total Volume (m³)',
-                    marker: { color: color2 },
+                    marker: { 
+                        color: '#3498db', // Warna biru untuk volume
+                        gradient: {
+                            type: 'vertical',
+                            color: ['#3498db', '#9b59b6'] // Gradient dari biru ke ungu
+                        }
+                    },
                     text: qtyByAllocation.map(qty => qty.toLocaleString(undefined, {maximumFractionDigits: 1}) + ' m³'),
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 },
                     yaxis: 'y1'
                 };
 
-                // Trace untuk Trip (Bar Chart)
+                // Trace untuk Trip (Bar Chart) - Diperbarui: hijau gradient ke orange
                 const allocationTrace2 = {
                     x: allocations,
                     y: tripsByAllocation,
                     type: 'bar',
                     name: 'Number of Trips',
-                    marker: { color: color },
+                    marker: { 
+                        color: '#27ae60', // Warna hijau untuk trip
+                        gradient: {
+                            type: 'vertical',
+                            color: ['#27ae60', '#f39c12'] // Gradient dari hijau ke orange
+                        }
+                    },
                     text: tripsByAllocation.map(trips => trips.toLocaleString()),
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 },
@@ -1469,10 +1487,10 @@
                     text: tripPercentages.map(p => p + '%'),
                     textposition: 'top center',
                     textfont: { 
-                        color: '#000000', // <- HITAM 
+                        color: '#000000',
                         size: 13, 
-                        weight: 'bold', // <- BOLD BIASA
-                        family: 'Arial, sans-serif' // <- FONT NORMAL
+                        weight: 'bold',
+                        family: 'Arial, sans-serif'
                     },
                     yaxis: 'y2'
                 };
