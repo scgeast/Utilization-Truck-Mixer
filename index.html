@@ -1,3 +1,9 @@
+Berikut adalah script lengkap HTML yang telah diperbarui sesuai permintaan Anda. Perubahan utama adalah:
+
+1.  **Menambahkan Filter Status** di atas tabel "📋 Truck Allocation Data".
+2.  **Mengimplementasikan fungsi Sortir (Ascending/Descending)** pada setiap header kolom tabel tersebut.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -236,7 +242,6 @@
             background: linear-gradient(135deg, #27ae60 0%, #9b59b6 100%);
             border-left-color: #27ae60;
         }
-
         /* Warna Khusus untuk KPI Allocation - Gradient Orange ke Ungu */
         .metric-card.kpi-allocation {
             background: linear-gradient(135deg, #f39c12 0%, #9b59b6 100%);
@@ -312,6 +317,7 @@
             margin-bottom: 15px;
             font-size: 1.3em;
         }
+        /* [PERUBAHAN] Gaya untuk filter tabel alokasi */
         .table-filter {
             background: #f8f9fa;
             padding: 15px;
@@ -325,7 +331,7 @@
         .table-filter .filter-group {
             margin-bottom: 0;
             flex: 1;
-            min-width: 200px;
+            min-width: 50px;
         }
         .table-filter label {
             font-weight: 600;
@@ -354,6 +360,7 @@
         .data-table th:hover {
             background: #e9ecef;
         }
+        /* [PERUBAHAN] Gaya indikator sortir */
         .data-table th.sort-asc::after {
             content: " ▲";
             font-size: 0.8em;
@@ -547,6 +554,7 @@
             .chart-container {
                 height: 300px;
             }
+            /* [PERUBAHAN] Responsif untuk filter tabel alokasi */
             .table-filter {
                 flex-direction: column;
                 align-items: stretch;
@@ -897,6 +905,20 @@
                     <!-- Table for Truck Allocation Data -->
                     <div class="table-section">
                         <h2>📋 Truck Allocation Data</h2>
+                        <!-- [PERUBAHAN] Tambahkan div filter status -->
+                        <div class="table-filter">
+                            <div class="filter-group">
+                                <label for="statusFilter">Filter by Status:</label>
+                                <select id="statusFilter" onchange="filterAllocationTable()">
+                                    <option value="">All Statuses</option>
+                                    <option value="Active">Active</option>
+                                    <option value="BD Minor">BD Minor</option>
+                                    <option value="BD Major">BD Major</option>
+                                    <option value="Non Active/Matee">Non Active/Matee</option>
+                                </select>
+                            </div>
+                            <button class="upload-btn" onclick="resetAllocationTableFilters()" style="width: auto; margin-top: 20px;">Reset Filters</button>
+                        </div>
                         <div id="allocationTableContainer"></div>
                     </div>
                     <!-- Footer untuk Truck Allocation -->
@@ -930,15 +952,28 @@
         };
         let truckAllocations = [];
         let editingAllocationId = null; // Menyimpan ID truk yang sedang diedit
+
+        // Variabel untuk menyimpan data dan status sortir tabel alokasi
+        let allocationTableData = [];
+        let currentAllocationSort = {
+            column: null,
+            direction: 'asc'
+        };
+
         // Initialize truck allocations from localStorage
         function initializeTruckAllocations() {
             const savedAllocations = localStorage.getItem('truckAllocations');
             if (savedAllocations) {
                 truckAllocations = JSON.parse(savedAllocations);
             }
+            // Inisialisasi data tabel utama dari localStorage
+            allocationTableData = [...truckAllocations];
+            // Reset sortir ke default saat inisialisasi
+            currentAllocationSort = { column: null, direction: 'asc' };
             updateAllocationTable();
             updateAllocationKPIs();
         }
+
         // Sidebar toggle for all screen sizes
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -963,6 +998,7 @@
                 }
             }, 300);
         }
+
         // Switch between tabs
         function switchTab(tab) {
             currentTab = tab;
@@ -986,6 +1022,7 @@
                 updateTabContent();
             }
         }
+
         // Event listener untuk upload file Excel
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -993,6 +1030,7 @@
                 handleExcelFileSelection(file);
             }
         });
+
         function handleExcelFileSelection(file) {
             if (!file.name.match(/\.(xlsx|xls)$/)) {
                 alert('Only Excel (.xlsx, .xls) files are supported!');
@@ -1003,6 +1041,7 @@
             document.getElementById('fileInfo').classList.remove('hidden');
             readExcelFile(file);
         }
+
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -1010,6 +1049,7 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
+
         function readExcelFile(file) {
             document.getElementById('loading').classList.remove('hidden');
             const reader = new FileReader();
@@ -1042,6 +1082,7 @@
             };
             reader.readAsArrayBuffer(file);
         }
+
         function loadSheetData(workbook, sheetName) {
             try {
                 const worksheet = workbook.Sheets[sheetName];
@@ -1059,6 +1100,7 @@
                 alert('Error loading data from sheet: ' + error.message);
             }
         }
+
         function convertExcelData(excelData) {
             if (excelData.length < 2) return [];
             const headers = excelData[0].map(header => header ? header.toString().trim() : '');
@@ -1112,6 +1154,7 @@
             }
             return data;
         }
+
         function formatExcelDate(dateValue) {
             if (!dateValue) return '';
             if (typeof dateValue === 'string') return dateValue;
@@ -1124,6 +1167,7 @@
             }
             return dateValue.toString();
         }
+
         function onSheetChange() {
             const sheetSelect = document.getElementById('sheetSelect');
             currentSheet = sheetSelect.value;
@@ -1132,6 +1176,7 @@
                 readExcelFile(fileInput.files[0]);
             }
         }
+
         // Drag and drop functionality
         const uploadArea = document.getElementById('uploadArea');
         uploadArea.addEventListener('dragover', function(e) {
@@ -1150,23 +1195,26 @@
                 handleExcelFileSelection(file);
             }
         });
+
         function applyFilters() {
             if (!uploadedData) return;
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
             filteredData = uploadedData.filter(row => {
-                const dateMatch = (!startDate || row['Date'] >= startDate) && 
+                const dateMatch = (!startDate || row['Date'] >= startDate) &&
                                  (!endDate || row['Date'] <= endDate);
                 return dateMatch;
             });
             processExcelData();
         }
+
         function resetFilters() {
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
             filteredData = [...uploadedData];
             processExcelData();
         }
+
         function updateDataInfo() {
             if (!uploadedData) return;
             const dates = uploadedData.map(row => row['Date']).filter(Boolean);
@@ -1181,6 +1229,7 @@
             // Update periode di header
             document.getElementById('periodeInfo').textContent = `${startDate} to ${endDate}`;
         }
+
         function processExcelData() {
             if (!filteredData || filteredData.length === 0) {
                 alert('No data available to process from the Excel file!');
@@ -1203,6 +1252,7 @@
                 }
             }, 1000);
         }
+
         function updateTabContent() {
             if (!filteredData) return;
             const analysis = performAnalysis(filteredData);
@@ -1218,6 +1268,7 @@
                 createChartsForTab(analysis, 'Mini');
             }
         }
+
         function updateAllocationFilter(tabType) {
             const filterId = `allocationFilter${tabType}`;
             const selectElement = document.getElementById(filterId);
@@ -1234,6 +1285,7 @@
                 selectElement.appendChild(option);
             });
         }
+
         function performAnalysis(data) {
             const analysis = {
                 totalTrips: { 'TM Big': 0, 'TM Mini': 0 },
@@ -1314,9 +1366,9 @@
                 'TM Mini': (analysis.totalTrips['TM Mini'] / uniqueDays / analysis.totalTrucks['TM Mini']).toFixed(1)
             };
             analysis.avgLoadPerTrip = {
-                'TM Big': analysis.totalTrips['TM Big'] > 0 ? 
+                'TM Big': analysis.totalTrips['TM Big'] > 0 ?
                     (analysis.totalQty['TM Big'] / analysis.totalTrips['TM Big']).toFixed(2) : '0',
-                'TM Mini': analysis.totalTrips['TM Mini'] > 0 ? 
+                'TM Mini': analysis.totalTrips['TM Mini'] > 0 ?
                     (analysis.totalQty['TM Mini'] / analysis.totalTrips['TM Mini']).toFixed(2) : '0'
             };
             // Calculate average load per trip for each truck number
@@ -1343,13 +1395,14 @@
             analysis.avgDistanceByTruckNo = {};
             for (const truckNo in analysis.tripsByTruckNo) {
                 const truckData = analysis.tripsByTruckNo[truckNo];
-                analysis.avgDistanceByTruckNo[truckNo] = truckData.trips > 0 ? 
+                analysis.avgDistanceByTruckNo[truckNo] = truckData.trips > 0 ?
                     (analysis.distanceByTruckNo[truckNo] / truckData.trips).toFixed(2) : '0';
             }
             analysis.totalVolume = (analysis.totalQty['TM Big'] + analysis.totalQty['TM Mini']).toFixed(1);
             analysis.totalTripsAll = analysis.totalTrips['TM Big'] + analysis.totalTrips['TM Mini'];
             return analysis;
         }
+
         function updateDashboard(analysis) {
             // Format angka dengan separator koma dan warna putih
             document.getElementById('totalBigTrips').textContent = analysis.totalTrips['TM Big'].toLocaleString();
@@ -1364,11 +1417,13 @@
             document.getElementById('totalBigTrucks').textContent = analysis.totalTrucks['TM Big'].toLocaleString();
             document.getElementById('totalMiniTrucks').textContent = analysis.totalTrucks['TM Mini'].toLocaleString();
         }
+
         function createCharts(analysis) {
             // Create charts for both tabs initially
             createChartsForTab(analysis, 'Big');
             createChartsForTab(analysis, 'Mini');
         }
+
         function createChartsForTab(analysis, tabType) {
             const isBig = tabType === 'Big';
             const truckType = isBig ? 'TM Big' : 'TM Mini';
@@ -1428,7 +1483,7 @@
                     y: volumesPerTruck,
                     type: 'bar',
                     name: 'Total Volume',
-                    marker: { 
+                    marker: {
                         color: volumesPerTruck.map(() => '#3498db'), // Warna biru untuk volume
                         gradient: {
                             type: 'vertical',
@@ -1446,7 +1501,7 @@
                     y: tripsPerTruck,
                     type: 'bar',
                     name: 'Total Trip',
-                    marker: { 
+                    marker: {
                         color: tripsPerTruck.map(() => '#27ae60'), // Warna hijau untuk trip
                         gradient: {
                             type: 'vertical',
@@ -1476,16 +1531,16 @@
                     },
                     text: avgTripPerDayPerTruck.map(avg => parseFloat(avg).toFixed(2)),
                     textposition: 'top center',
-                    textfont: { 
-                        color: '#000000', // <- HITAM 
-                        size: 13, 
+                    textfont: {
+                        color: '#000000', // <- HITAM
+                        size: 13,
                         weight: 'bold', // <- BOLD BIASA
                         family: 'Arial, sans-serif' // <- FONT NORMAL
                     },
                     yaxis: 'y2'
                 };
                 const volumeTripAvgLayout = {
-                    yaxis: { 
+                    yaxis: {
                         title: 'Volume & Trip Amount',
                         side: 'left'
                     },
@@ -1554,7 +1609,7 @@
                     x: truckNos,
                     y: avgLoads,
                     type: 'bar',
-                    marker: { 
+                    marker: {
                         color: '#27ae60', // Warna hijau untuk avg load
                         gradient: {
                             type: 'vertical',
@@ -1666,7 +1721,7 @@
                     y: sortedTotalDistances,
                     type: 'bar',
                     name: 'Total Distance (km)',
-                    marker: { 
+                    marker: {
                         color: totalDistanceColors,
                         gradient: {
                             type: 'vertical',
@@ -1678,7 +1733,7 @@
                     textfont: { color: 'white', size: 10 }
                 };
                 const totalDistanceLayout = {
-                    yaxis: { 
+                    yaxis: {
                         title: 'Total Distance (km)'
                     },
                     xaxis: { title: 'Truck No', tickangle: -45 },
@@ -1709,7 +1764,7 @@
                     y: sortedAvgDistances,
                     type: 'bar',
                     name: 'Avg Distance per Trip (km)',
-                    marker: { 
+                    marker: {
                         color: avgDistanceColors,
                         gradient: {
                             type: 'vertical',
@@ -1721,7 +1776,7 @@
                     textfont: { color: 'white', size: 10 }
                 };
                 const avgDistanceLayout = {
-                    yaxis: { 
+                    yaxis: {
                         title: 'Avg Distance per Trip (km)'
                     },
                     xaxis: { title: 'Truck No', tickangle: -45 },
@@ -1751,7 +1806,7 @@
                     y: sortedTotalDistances,
                     type: 'bar',
                     name: 'Total Distance (km)',
-                    marker: { 
+                    marker: {
                         color: '#FFA500',
                         gradient: {
                             type: 'vertical',
@@ -1780,15 +1835,15 @@
                     },
                     text: sortedAvgDistances.map(avg => parseFloat(avg).toFixed(2) + ' km'),
                     textposition: 'top center',
-                    textfont: { 
+                    textfont: {
                         color: '#000000',
-                        size: 13, 
+                        size: 13,
                         weight: 'bold',
                         family: 'Arial, sans-serif'
                     }
                 };
                 const distanceLayout = {
-                    yaxis: { 
+                    yaxis: {
                         title: 'Distance (km)'
                     },
                     xaxis: { title: 'Truck No', tickangle: -45 },
@@ -1809,7 +1864,7 @@
             // --- Additional Chart for TM Mini - Allocation Truck (Corrected) ---
             if (!isBig) {
                 const allocations = Object.keys(analysis.tripsByAllocation).filter(alloc => {
-                    return filteredData.some(row => 
+                    return filteredData.some(row =>
                         row['Allocation Truck'] === alloc && row['Truck Type'] === 'TM Mini'
                     );
                 });
@@ -1834,7 +1889,7 @@
                 });
                 // Calculate percentages for trips
                 const totalTrips = tripsByAllocation.reduce((sum, trips) => sum + trips, 0);
-                const tripPercentages = tripsByAllocation.map(trips => 
+                const tripPercentages = tripsByAllocation.map(trips =>
                     totalTrips > 0 ? ((trips / totalTrips) * 100).toFixed(1) : 0
                 );
                 // Trace untuk Volume (Bar Chart) - Diperbarui: biru gradient ke ungu
@@ -1843,7 +1898,7 @@
                     y: qtyByAllocation,
                     type: 'bar',
                     name: 'Total Volume (m³)',
-                    marker: { 
+                    marker: {
                         color: '#3498db', // Warna biru untuk volume
                         gradient: {
                             type: 'vertical',
@@ -1861,7 +1916,7 @@
                     y: tripsByAllocation,
                     type: 'bar',
                     name: 'Number of Trips',
-                    marker: { 
+                    marker: {
                         color: '#27ae60', // Warna hijau untuk trip
                         gradient: {
                             type: 'vertical',
@@ -1891,16 +1946,16 @@
                     },
                     text: tripPercentages.map(p => p + '%'),
                     textposition: 'top center',
-                    textfont: { 
+                    textfont: {
                         color: '#000000',
-                        size: 13, 
+                        size: 13,
                         weight: 'bold',
                         family: 'Arial, sans-serif'
                     },
                     yaxis: 'y2'
                 };
                 const allocationLayout = {
-                    yaxis: { 
+                    yaxis: {
                         title: 'Amount',
                         side: 'left'
                     },
@@ -1926,6 +1981,7 @@
                 Plotly.newPlot('allocationChartMini', [allocationTrace1, allocationTrace2, allocationTrace3], allocationLayout);
             }
         }
+
         function sortTable(columnIndex, tabType) {
             const containerId = `dataTableContainer${tabType}`;
             const table = document.querySelector(`#${containerId} table`);
@@ -1961,29 +2017,32 @@
                     return currentSort.direction === 'asc' ? aDate - bDate : bDate - aDate;
                 }
                 // Handle text values
-                return currentSort.direction === 'asc' 
+                return currentSort.direction === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
             });
             // Reappend sorted rows
             rows.forEach(row => tbody.appendChild(row));
         }
+
         function filterTableData() {
             const tabType = currentTab === 'big' ? 'Big' : 'Mini';
             const allocationFilter = document.getElementById(`allocationFilter${tabType}`).value;
             let filteredTableData = tableData[tabType];
             if (allocationFilter) {
-                filteredTableData = tableData[tabType].filter(row => 
+                filteredTableData = tableData[tabType].filter(row =>
                     row['Allocation Truck'] === allocationFilter
                 );
             }
             displayDataTable(filteredTableData, tabType);
         }
+
         function resetTableFilters() {
             const tabType = currentTab === 'big' ? 'Big' : 'Mini';
             document.getElementById(`allocationFilter${tabType}`).value = '';
             displayDataTable(tableData[tabType], tabType);
         }
+
         function displayDataTable(data, tabType) {
             const limitedData = data.slice(0, 100); // Increased limit for better usability
             const containerId = `dataTableContainer${tabType}`;
@@ -2024,7 +2083,156 @@
             `;
             document.getElementById(containerId).innerHTML = tableHTML;
         }
+
         // ========== TRUCK ALLOCATION FUNCTIONS ==========
+
+        // [PERUBAHAN] Fungsi untuk menyortir tabel alokasi
+        function sortAllocationTable(columnIndex) {
+            const headers = document.querySelectorAll('#allocationDataTable th');
+            const currentHeader = headers[columnIndex];
+
+            // Tentukan arah sortir
+            if (currentAllocationSort.column === columnIndex) {
+                currentAllocationSort.direction = currentAllocationSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentAllocationSort.direction = 'asc'; // Reset ke ascending jika kolom baru
+            }
+            currentAllocationSort.column = columnIndex;
+
+            // Urutkan data berdasarkan kolom dan arah yang dipilih
+            allocationTableData.sort((a, b) => {
+                let aVal = a;
+                let bVal = b;
+                // Mapping indeks kolom ke properti objek
+                // Indeks: 0=No, 1=Truck Type, 2=Truck No, 3=Plant Allocation, 4=Status, 5=Date Info, 6=Duration, 7=Remarks
+                const keys = ['', 'truckType', 'truckNo', 'plantAllocation', 'status', 'dateInfo', 'duration', 'remarks', 'actions'];
+                const key = keys[columnIndex];
+
+                if (key === '') { // Kolom No (indeks 0) atau Actions (indeks 8)
+                    // Urutan berdasarkan urutan dalam array
+                    aVal = a.index || 0;
+                    bVal = b.index || 0;
+                } else {
+                     aVal = a[key];
+                     bVal = b[key];
+                }
+
+                // Handle numeric values (Duration - kolom 6)
+                if (columnIndex === 6) {
+                    const aNum = parseFloat(aVal) || 0;
+                    const bNum = parseFloat(bVal) || 0;
+                    return currentAllocationSort.direction === 'asc' ? aNum - bNum : bNum - aNum;
+                }
+
+                // Handle date values (Date Info - kolom 5)
+                if (columnIndex === 5 && aVal && bVal) {
+                    const aDate = new Date(aVal);
+                    const bDate = new Date(bVal);
+                    return currentAllocationSort.direction === 'asc' ? aDate - bDate : bDate - aDate;
+                }
+
+                // Handle text values
+                // Konversi ke string untuk memastikan localeCompare bekerja
+                aVal = String(aVal || '');
+                bVal = String(bVal || '');
+                return currentAllocationSort.direction === 'asc'
+                    ? aVal.localeCompare(bVal)
+                    : bVal.localeCompare(aVal);
+            });
+
+            // Tampilkan ulang tabel dengan data yang telah diurutkan
+            updateAllocationTable();
+        }
+
+        // [PERUBAHAN] Fungsi untuk memfilter tabel alokasi berdasarkan status
+        function filterAllocationTable() {
+            // Fungsi ini akan memanggil updateAllocationTable yang sudah menyertakan logika filter
+            updateAllocationTable();
+        }
+
+        // [PERUBAHAN] Fungsi untuk mereset filter tabel alokasi
+        function resetAllocationTableFilters() {
+            document.getElementById('statusFilter').value = '';
+            // Reset sortir ke default (No, ascending)
+            currentAllocationSort = { column: null, direction: 'asc' };
+            // Tampilkan ulang tabel dengan semua data dan urutan default
+            updateAllocationTable();
+        }
+
+        // [PERUBAHAN] Fungsi untuk menampilkan tabel alokasi dengan fitur sortir dan filter
+        function updateAllocationTable() {
+            // Gunakan data yang sudah difilter sebelumnya untuk ditampilkan
+            let displayData = allocationTableData;
+            const statusFilter = document.getElementById('statusFilter').value;
+            if (statusFilter) {
+                displayData = displayData.filter(item => item.status === statusFilter);
+            }
+
+            const container = document.getElementById('allocationTableContainer');
+            if (displayData.length === 0) {
+                container.innerHTML = '<p>No truck allocation data available or no data matches the current filter.</p>';
+                return;
+            }
+
+            // Buat elemen tabel
+            let tableHTML = `
+                <table class="data-table" id="allocationDataTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortAllocationTable(0)">No</th>
+                            <th onclick="sortAllocationTable(1)">Truck Type</th>
+                            <th onclick="sortAllocationTable(2)">Truck No</th>
+                            <th onclick="sortAllocationTable(3)">Plant Allocation</th>
+                            <th onclick="sortAllocationTable(4)">Status</th>
+                            <th onclick="sortAllocationTable(5)">Date Info</th>
+                            <th onclick="sortAllocationTable(6)">Duration (Days)</th>
+                            <th onclick="sortAllocationTable(7)">Remarks</th>
+                            <th>Actions</th> <!-- Kolom Actions tidak disortir -->
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            displayData.forEach((allocation, index) => {
+                const durationClass = allocation.duration > 30 ? 'duration-over-30' : '';
+                const statusClass = `status-${allocation.status.toLowerCase().replace(/ /g, '-')}`;
+                tableHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${allocation.truckType}</td>
+                        <td>${allocation.truckNo}</td>
+                        <td>${allocation.plantAllocation}</td>
+                        <td class="${statusClass}">${allocation.status}</td>
+                        <td>${allocation.dateInfo || '-'}</td>
+                        <td class="${durationClass}">${allocation.duration}</td>
+                        <td>${allocation.remarks || '-'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editAllocation('${allocation.id}')">Edit</button>
+                            ${allocation.status !== 'Active' ?
+                                `<button class="btn-save" onclick="updateAllocationStatus('${allocation.id}', 'Active')">Set Active</button>` :
+                                ''
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = tableHTML;
+
+            // Tambahkan kelas sortir ke header yang aktif
+            if (currentAllocationSort.column !== null) {
+                const headers = document.querySelectorAll('#allocationDataTable th');
+                if (headers[currentAllocationSort.column]) {
+                    headers[currentAllocationSort.column].classList.remove('sort-asc', 'sort-desc');
+                    headers[currentAllocationSort.column].classList.add(`sort-${currentAllocationSort.direction}`);
+                }
+            }
+        }
+
         function toggleBreakdownFields() {
             const status = document.getElementById('status').value;
             const dateInfoGroup = document.getElementById('dateInfoGroup');
@@ -2037,6 +2245,7 @@
                 remarksGroup.style.display = 'none';
             }
         }
+
         function calculateDuration(dateInfo) {
             if (!dateInfo) return 0;
             const startDate = new Date(dateInfo);
@@ -2045,6 +2254,8 @@
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             return diffDays;
         }
+
+        // [PERUBAHAN] Update fungsi saveAllocation untuk mengelola allocationTableData
         function saveAllocation() {
             const truckType = document.getElementById('truckType').value;
             const truckNo = document.getElementById('truckNo').value.trim();
@@ -2099,15 +2310,17 @@
 
             // Save to localStorage
             localStorage.setItem('truckAllocations', JSON.stringify(truckAllocations));
-
-            // Update UI
-            updateAllocationTable();
+            // Perbarui data tabel utama dari localStorage
+            allocationTableData = [...truckAllocations]; // Refresh data utama
+            // Reset sortir ke default saat data berubah
+            currentAllocationSort = { column: null, direction: 'asc' };
+            updateAllocationTable(); // Tampilkan ulang dengan data baru
             updateAllocationKPIs();
-
             // Clear form
             clearAllocationForm();
             alert('Truck allocation saved successfully!');
         }
+
         function clearAllocationForm() {
             document.getElementById('truckType').value = 'TM Big';
             document.getElementById('truckNo').value = '';
@@ -2119,6 +2332,7 @@
             // editingAllocationId = null;
             toggleBreakdownFields(); // Pastikan elemen breakdown disembunyikan
         }
+
         function editAllocation(id) {
             const allocation = truckAllocations.find(a => a.id === id);
             if (!allocation) return;
@@ -2140,6 +2354,8 @@
             // Scroll to form
             document.querySelector('.allocation-form').scrollIntoView({ behavior: 'smooth' });
         }
+
+        // [PERUBAHAN] Update fungsi updateAllocationStatus untuk mengelola allocationTableData
         function updateAllocationStatus(id, newStatus) {
             const allocation = truckAllocations.find(a => a.id === id);
             if (!allocation) return;
@@ -2159,76 +2375,24 @@
 
             // Save to localStorage
             localStorage.setItem('truckAllocations', JSON.stringify(truckAllocations));
-
-            // Update UI
-            updateAllocationTable();
+            // Perbarui data tabel utama dari localStorage
+            allocationTableData = [...truckAllocations]; // Refresh data utama
+            // Jika sedang disortir berdasarkan status, mungkin perlu diurutkan ulang
+            if (currentAllocationSort.column === 4) { // Kolom Status
+                 // Tidak perlu panggil sortAllocationTable lagi, cukup refresh tampilan
+                 // Karena data di array utama sudah berubah, updateAllocationTable akan menampilkan yang terbaru
+            }
+            updateAllocationTable(); // Tampilkan ulang dengan data baru
             updateAllocationKPIs();
             alert(`Truck status updated to ${newStatus}`);
         }
-        function updateAllocationTable() {
-            const container = document.getElementById('allocationTableContainer');
-            if (truckAllocations.length === 0) {
-                container.innerHTML = '<p>No truck allocation data available. Add new allocations using the form above.</p>';
-                return;
-            }
 
-            let tableHTML = `
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Truck Type</th>
-                            <th>Truck No</th>
-                            <th>Plant Allocation</th>
-                            <th>Status</th>
-                            <th>Date Info</th>
-                            <th>Duration (Days)</th>
-                            <th>Remarks</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            truckAllocations.forEach((allocation, index) => {
-                const durationClass = allocation.duration > 30 ? 'duration-over-30' : '';
-                const statusClass = `status-${allocation.status.toLowerCase().replace(/ /g, '-')}`;
-
-                tableHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${allocation.truckType}</td>
-                        <td>${allocation.truckNo}</td>
-                        <td>${allocation.plantAllocation}</td>
-                        <td class="${statusClass}">${allocation.status}</td>
-                        <td>${allocation.dateInfo || '-'}</td>
-                        <td class="${durationClass}">${allocation.duration}</td>
-                        <td>${allocation.remarks || '-'}</td>
-                        <td>
-                            <button class="btn-edit" onclick="editAllocation('${allocation.id}')">Edit</button>
-                            ${allocation.status !== 'Active' ? 
-                                `<button class="btn-save" onclick="updateAllocationStatus('${allocation.id}', 'Active')">Set Active</button>` : 
-                                ''
-                            }
-                        </td>
-                    </tr>
-                `;
-            });
-
-            tableHTML += `
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = tableHTML;
-        }
         function updateAllocationKPIs() {
             // Count trucks by type and status
             const counts = {
                 'TM Big': { total: 0, active: 0, bdMinor: 0, bdMajor: 0 },
                 'TM Mini': { total: 0, active: 0, bdMinor: 0, bdMajor: 0 }
             };
-
             truckAllocations.forEach(allocation => {
                 const type = allocation.truckType;
                 const status = allocation.status;
@@ -2260,10 +2424,8 @@
             const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
             document.getElementById('startDate').value = firstDay.toISOString().split('T')[0];
             document.getElementById('endDate').value = lastDay.toISOString().split('T')[0];
-
             // Initialize sidebar toggle
             document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-
             // Initialize truck allocations
             initializeTruckAllocations();
         });
@@ -2279,3 +2441,4 @@
     </script>
 </body>
 </html>
+```
