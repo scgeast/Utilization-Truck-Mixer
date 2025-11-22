@@ -1220,7 +1220,12 @@
                     },
                     text: avgTripPerDayPerTruck.map(avg => parseFloat(avg).toFixed(2)),
                     textposition: 'top center',
-                    textfont: { color: '#CC0000', size: 12, weight: 'bolder' }, // Warna merah gelap bold untuk data label
+                    textfont: { 
+                        color: '#FF0000', 
+                        size: 14, 
+                        weight: 900,
+                        family: 'Impact, Arial Black, Verdana, sans-serif'
+                    },
                     yaxis: 'y2'
                 };
 
@@ -1463,7 +1468,12 @@
                     },
                     text: tripPercentages.map(p => p + '%'),
                     textposition: 'top center',
-                    textfont: { color: '#CC0000', size: 12, weight: 'bolder' }, // Warna merah gelap bold untuk persentase
+                    textfont: { 
+                        color: '#FF4444', 
+                        size: 14, 
+                        weight: 900,
+                        family: 'Impact, Arial Black, Verdana, sans-serif'
+                    },
                     yaxis: 'y2'
                 };
 
