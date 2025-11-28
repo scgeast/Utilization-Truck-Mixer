@@ -72,7 +72,7 @@
             box-shadow: none;
         }
         .sidebar-toggle.sidebar-open {
-            left: 370px;
+            left: 10px; /* PERUBAHAN: Tetap di posisi kiri saat sidebar terbuka */
         }
         .sidebar-toggle:hover {
             color: #3498db;
@@ -112,20 +112,42 @@
             align-items: center;
             min-height: 60px;
             width: 100vw;
-            position: relative;
+            position: sticky; /* PERUBAHAN: Sticky untuk freeze */
+            top: 0; /* PERUBAHAN: Nempel di atas */
+            z-index: 999; /* PERUBAHAN: Z-index tinggi */
             left: 50%;
             right: 50%;
             margin-left: -50vw;
             margin-right: -50vw;
             margin-top: 0;
             border-radius: 0;
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        .header.sidebar-open {
+            margin-left: calc(-50vw + 350px);
+            width: calc(100vw - 350px);
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
         .header h1 {
             color: white;
             font-size: 1.2em;
             margin-bottom: 0;
-            flex: 1;
-            margin-left: 40px; /* <-- Tambahkan baris ini */
+            flex: 0 0 auto;
+        }
+        .filter-display {
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            padding: 5px 15px;
+            /* PERUBAHAN: Hilangkan background dan border */
+            background: transparent;
+            border: none;
+            border-radius: 0;
         }
         .header-info {
             color: #f0f0f0;
@@ -213,6 +235,13 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
+            /* PERUBAHAN: Sticky untuk freeze KPI */
+            position: sticky;
+            top: 60px; /* Sesuaikan dengan tinggi header */
+            z-index: 998;
+            background: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .metric-card {
             background: rgba(255, 255, 255, 0.95);
@@ -273,6 +302,11 @@
             border-radius: 10px;
             overflow: hidden;
             border: 1px solid #e0e0e0;
+            /* PERUBAHAN: Sticky untuk freeze tabs */
+            position: sticky;
+            top: 140px; /* Header (60px) + KPI (80px) */
+            z-index: 997;
+            background: white;
         }
         .tab {
             flex: 1;
@@ -531,12 +565,24 @@
                 min-width: 300px;
             }
             .sidebar-toggle.sidebar-open {
-                left: 320px;
+                left: 10px; /* PERUBAHAN: Tetap di posisi kiri */
+            }
+            .header.sidebar-open {
+                margin-left: calc(-50vw + 300px);
+                width: calc(100vw - 300px);
             }
         }
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                position: relative; /* PERUBAHAN: Non-sticky di mobile */
+                top: auto;
+                z-index: auto;
+            }
+            .tabs {
+                position: relative; /* PERUBAHAN: Non-sticky di mobile */
+                top: auto;
+                z-index: auto;
             }
             .metric-value {
                 font-size: 1.5em;
@@ -554,7 +600,7 @@
                 top: 15px; /* Disesuaikan untuk mobile */
             }
             .sidebar-toggle.sidebar-open {
-                left: 300px;
+                left: 10px; /* PERUBAHAN: Tetap di posisi kiri */
             }
             .main-content {
                 padding: 10px;
@@ -569,10 +615,26 @@
                 right: 50%;
                 margin-left: -50vw;
                 margin-right: -50vw;
+                position: sticky; /* Tetap sticky di mobile */
+            }
+            .header.sidebar-open {
+                margin-left: -50vw;
+                width: 100vw;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+                width: 100%;
             }
             .header h1 {
                 font-size: 1.3em;
                 margin-bottom: 0;
+                text-align: center;
+            }
+            .filter-display {
+                font-size: 1.1em;
+                text-align: center;
             }
             .header-info {
                 font-size: 0.75em;
@@ -621,7 +683,7 @@
                 min-width: 100%;
             }
             .sidebar-toggle.sidebar-open {
-                left: calc(100% - 50px);
+                left: 10px; /* PERUBAHAN: Tetap di posisi kiri */
             }
             .chart-container {
                 height: 250px;
@@ -637,7 +699,18 @@
                 margin-left: -50vw;
                 margin-right: -50vw;
             }
+            .header.sidebar-open {
+                margin-left: -50vw;
+                width: 100vw;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 8px;
+            }
             .header h1 {
+                font-size: 1.1em;
+            }
+            .filter-display {
                 font-size: 1.1em;
             }
             .header-info {
@@ -693,6 +766,19 @@
                     <label for="endDate">End Date:</label>
                     <input type="date" id="endDate" onchange="applyFilters()">
                 </div>
+                <!-- Filter Area dan Plant Name -->
+                <div class="filter-group">
+                    <label for="areaFilter">Area:</label>
+                    <select id="areaFilter" onchange="applyFilters()">
+                        <option value="">All Areas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="plantFilter">Plant Name:</label>
+                    <select id="plantFilter" onchange="applyFilters()">
+                        <option value="">All Plants</option>
+                    </select>
+                </div>
                 <button class="upload-btn" onclick="resetFilters()">🔄 Reset Filter</button>
             </div>
             <!-- Data Info -->
@@ -706,8 +792,13 @@
         <!-- Main Content -->
         <div class="main-content" id="mainContent">
             <!-- Header -->
-            <div class="header">
-                <h1>🚛 Truck Mixer Utilization</h1>
+            <div class="header" id="header">
+                <div class="header-content">
+                    <h1>🚛 Truck Mixer Utilization</h1>
+                    <div class="filter-display" id="filterDisplay">
+                        All Areas
+                    </div>
+                </div>
                 <div class="header-info">
                     <p>Period: <span id="periodeInfo">-</span></p>
                 </div>
@@ -997,15 +1088,19 @@
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('mainContent');
             const sidebarToggle = document.getElementById('sidebarToggle');
+            const header = document.getElementById('header');
+            
             isSidebarCollapsed = !isSidebarCollapsed;
             if (isSidebarCollapsed) {
                 sidebar.classList.remove('open');
                 mainContent.classList.add('expanded');
                 sidebarToggle.classList.remove('sidebar-open');
+                header.classList.remove('sidebar-open');
             } else {
                 sidebar.classList.add('open');
                 mainContent.classList.remove('expanded');
                 sidebarToggle.classList.add('sidebar-open');
+                header.classList.add('sidebar-open');
             }
             // Update charts on resize
             setTimeout(() => {
@@ -1114,11 +1209,61 @@
                 updateDataInfo();
                 // Set filter dates berdasarkan data yang diupload
                 setDateFiltersFromData();
+                // Update filter options untuk Area dan Plant Name
+                updateAreaAndPlantFilters();
                 applyFilters();
             } catch (error) {
                 console.error('Error loading sheet data:', error);
                 alert('Error loading data from sheet: ' + error.message);
             }
+        }
+
+        // Function to update Area and Plant Name filter options
+        function updateAreaAndPlantFilters() {
+            if (!uploadedData || uploadedData.length === 0) return;
+            
+            // Get unique areas
+            const areas = [...new Set(uploadedData.map(row => row['Area']).filter(Boolean))].sort();
+            const areaFilter = document.getElementById('areaFilter');
+            areaFilter.innerHTML = '<option value="">All Areas</option>';
+            areas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area;
+                option.textContent = area;
+                areaFilter.appendChild(option);
+            });
+            
+            // Get unique plant names
+            const plants = [...new Set(uploadedData.map(row => row['Plant Name']).filter(Boolean))].sort();
+            const plantFilter = document.getElementById('plantFilter');
+            plantFilter.innerHTML = '<option value="">All Plants</option>';
+            plants.forEach(plant => {
+                const option = document.createElement('option');
+                option.value = plant;
+                option.textContent = plant;
+                plantFilter.appendChild(option);
+            });
+        }
+
+        // Function to update filter display in header
+        function updateFilterDisplay() {
+            const areaFilter = document.getElementById('areaFilter').value;
+            const plantFilter = document.getElementById('plantFilter').value;
+            const filterDisplay = document.getElementById('filterDisplay');
+            
+            let displayText = '';
+            
+            if (!areaFilter && !plantFilter) {
+                displayText = 'All Areas';
+            } else if (areaFilter && !plantFilter) {
+                displayText = areaFilter;
+            } else if (areaFilter && plantFilter) {
+                displayText = plantFilter;
+            } else if (!areaFilter && plantFilter) {
+                displayText = plantFilter;
+            }
+            
+            filterDisplay.textContent = displayText;
         }
 
         // Function to set date filters based on uploaded data
@@ -1155,6 +1300,8 @@
             const siteNoIndex = headers.findIndex(h => h.includes('Site') && h.includes('No'));
             const siteNameIndex = headers.findIndex(h => h.includes('Site') && h.includes('Name'));
             const distanceIndex = headers.findIndex(h => h.includes('Distance') || h.includes('Jarak'));
+            const areaIndex = headers.findIndex(h => h.includes('Area'));
+            const plantNameIndex = headers.findIndex(h => h.includes('Plant') && h.includes('Name'));
             
             const finalIndices = {
                 dpNo: dpNoIndex !== -1 ? dpNoIndex : 0,
@@ -1164,7 +1311,9 @@
                 qty: qtyIndex !== -1 ? qtyIndex : 15,
                 siteNo: siteNoIndex !== -1 ? siteNoIndex : 19,
                 siteName: siteNameIndex !== -1 ? siteNameIndex : 20,
-                distance: distanceIndex !== -1 ? distanceIndex : 21 // Kolom V (Distance)
+                distance: distanceIndex !== -1 ? distanceIndex : 21, // Kolom V (Distance)
+                area: areaIndex !== -1 ? areaIndex : -1,
+                plantName: plantNameIndex !== -1 ? plantNameIndex : -1
             };
             
             console.log('Column indices:', finalIndices);
@@ -1181,6 +1330,8 @@
                 const siteNo = row[finalIndices.siteNo];
                 const siteName = row[finalIndices.siteName];
                 const distance = row[finalIndices.distance];
+                const area = finalIndices.area !== -1 ? row[finalIndices.area] : '';
+                const plantName = finalIndices.plantName !== -1 ? row[finalIndices.plantName] : '';
                 
                 if (truckNo && allocation && qty !== undefined && qty !== null && qty !== '') {
                     // Determine Truck Type based on Truck No
@@ -1207,7 +1358,9 @@
                         'Site Name': siteName ? siteName.toString().trim() : '-',
                         'Qty': parseFloat(qty) || 0,
                         'Truck Type': truckType,
-                        'Distance': parseFloat(distance) || 0
+                        'Distance': parseFloat(distance) || 0,
+                        'Area': area ? area.toString().trim() : '',
+                        'Plant Name': plantName ? plantName.toString().trim() : ''
                     });
                 }
             }
@@ -1259,15 +1412,23 @@
             if (!uploadedData) return;
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
+            const areaFilter = document.getElementById('areaFilter').value;
+            const plantFilter = document.getElementById('plantFilter').value;
+            
             filteredData = uploadedData.filter(row => {
                 const dateMatch = (!startDate || row['Date'] >= startDate) && 
                                  (!endDate || row['Date'] <= endDate);
-                return dateMatch;
+                const areaMatch = !areaFilter || row['Area'] === areaFilter;
+                const plantMatch = !plantFilter || row['Plant Name'] === plantFilter;
+                
+                return dateMatch && areaMatch && plantMatch;
             });
             
             // Update periode info di header dan data info di sidebar
             updatePeriodInfo(startDate, endDate);
             updateDataInfo();
+            // Update filter display in header
+            updateFilterDisplay();
             
             processExcelData();
         }
@@ -1275,6 +1436,10 @@
         function resetFilters() {
             // Reset to the original date range from the data
             setDateFiltersFromData();
+            // Reset area and plant filters
+            document.getElementById('areaFilter').value = '';
+            document.getElementById('plantFilter').value = '';
+            
             filteredData = [...uploadedData];
             
             // Update periode info di header dan data info di sidebar
@@ -1283,6 +1448,8 @@
             const endDate = dates.sort().pop();
             updatePeriodInfo(startDate, endDate);
             updateDataInfo();
+            // Update filter display in header
+            updateFilterDisplay();
             
             processExcelData();
         }
