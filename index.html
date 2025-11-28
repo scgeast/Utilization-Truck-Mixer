@@ -72,7 +72,7 @@
             box-shadow: none;
         }
         .sidebar-toggle.sidebar-open {
-            left: 10px; /* PERUBAHAN: Tetap di posisi kiri saat sidebar terbuka */
+            left: 370px;
         }
         .sidebar-toggle:hover {
             color: #3498db;
@@ -112,9 +112,7 @@
             align-items: center;
             min-height: 60px;
             width: 100vw;
-            position: sticky; /* PERUBAHAN: Sticky untuk freeze */
-            top: 0; /* PERUBAHAN: Nempel di atas */
-            z-index: 999; /* PERUBAHAN: Z-index tinggi */
+            position: relative;
             left: 50%;
             right: 50%;
             margin-left: -50vw;
@@ -144,10 +142,9 @@
             font-size: 1.2em;
             font-weight: 600;
             padding: 5px 15px;
-            /* PERUBAHAN: Hilangkan background dan border */
-            background: transparent;
-            border: none;
-            border-radius: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .header-info {
             color: #f0f0f0;
@@ -235,13 +232,6 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
-            /* PERUBAHAN: Sticky untuk freeze KPI */
-            position: sticky;
-            top: 60px; /* Sesuaikan dengan tinggi header */
-            z-index: 998;
-            background: white;
-            padding: 10px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .metric-card {
             background: rgba(255, 255, 255, 0.95);
@@ -302,11 +292,6 @@
             border-radius: 10px;
             overflow: hidden;
             border: 1px solid #e0e0e0;
-            /* PERUBAHAN: Sticky untuk freeze tabs */
-            position: sticky;
-            top: 140px; /* Header (60px) + KPI (80px) */
-            z-index: 997;
-            background: white;
         }
         .tab {
             flex: 1;
@@ -565,7 +550,7 @@
                 min-width: 300px;
             }
             .sidebar-toggle.sidebar-open {
-                left: 10px; /* PERUBAHAN: Tetap di posisi kiri */
+                left: 320px;
             }
             .header.sidebar-open {
                 margin-left: calc(-50vw + 300px);
@@ -575,14 +560,6 @@
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                position: relative; /* PERUBAHAN: Non-sticky di mobile */
-                top: auto;
-                z-index: auto;
-            }
-            .tabs {
-                position: relative; /* PERUBAHAN: Non-sticky di mobile */
-                top: auto;
-                z-index: auto;
             }
             .metric-value {
                 font-size: 1.5em;
@@ -600,7 +577,7 @@
                 top: 15px; /* Disesuaikan untuk mobile */
             }
             .sidebar-toggle.sidebar-open {
-                left: 10px; /* PERUBAHAN: Tetap di posisi kiri */
+                left: 300px;
             }
             .main-content {
                 padding: 10px;
@@ -615,7 +592,6 @@
                 right: 50%;
                 margin-left: -50vw;
                 margin-right: -50vw;
-                position: sticky; /* Tetap sticky di mobile */
             }
             .header.sidebar-open {
                 margin-left: -50vw;
@@ -683,7 +659,7 @@
                 min-width: 100%;
             }
             .sidebar-toggle.sidebar-open {
-                left: 10px; /* PERUBAHAN: Tetap di posisi kiri */
+                left: calc(100% - 50px);
             }
             .chart-container {
                 height: 250px;
