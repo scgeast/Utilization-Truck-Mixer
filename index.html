@@ -549,6 +549,11 @@
             color: white;
             border: 1px solid #c0392b !important;
         }
+        .hourly-header-total-mini {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            border: 1px solid #e67e22 !important;
+        }
         /* NEW: Warna untuk kolom Total per Truck */
         .total-avg-low {
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
@@ -978,6 +983,12 @@
                         <div class="chart-section">
                             <h2>📍 Total Distance x Avg Distance per Truck</h2>
                             <div class="chart-container" id="distanceChartMini"></div>
+                        </div>
+                        <!-- NEW: Detail Trip per Hour Table for TM Mini -->
+                        <div class="chart-section">
+                            <h2>⏰ Detail Trip per Hour</h2>
+                            <div class="chart-container" id="hourlyTripDetailMini"></div>
+                            <div id="hourlyTripTableContainerMini" class="table-container" style="margin-top: 20px;"></div>
                         </div>
                     </div>
                     <!-- Data Table -->
@@ -2478,10 +2489,8 @@
                 Plotly.newPlot('allocationChartMini', [allocationTrace1, allocationTrace2, allocationTrace3], allocationLayout);
             }
             
-            // --- NEW: Create Hourly Trip Table and Chart ---
-            if (isBig) {
-                createHourlyTripTable(analysis, 'Big');
-            }
+            // --- NEW: Create Hourly Trip Table and Chart for both tabs ---
+            createHourlyTripTable(analysis, tabType);
         }
 
         function createHourlyTripTable(analysis, tabType) {
@@ -2493,6 +2502,12 @@
                 const truckData = analysis.tripsByTruckNo[truckNo];
                 return truckData && truckData.truckType === truckType;
             });
+            
+            if (truckNos.length === 0) {
+                document.getElementById(`hourlyTripTableContainer${tabType}`).innerHTML = 
+                    '<p style="color: #7f8c8d; text-align: center; padding: 20px;">No hourly trip data available for ' + truckType + '</p>';
+                return;
+            }
             
             // Generate jam dari 00:00 hingga 23:00
             const hours = [];
@@ -2517,32 +2532,36 @@
                 truckDailyAverages[truckNo] = avgTripsPerDay;
             });
             
-            // Buat header tabel dengan warna sesuai permintaan
+            // Warna header berdasarkan tipe truck
+            const headerColor = isBig ? 
+                'linear-gradient(135deg, #3498db 0%, #2980b9 100%)' : 
+                'linear-gradient(135deg, #27ae60 0%, #229954 100%)';
+            const totalHeaderColor = isBig ?
+                'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)' :
+                'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)';
+            
+            // Buat header tabel dengan warna sesuai tipe truck
             let tableHTML = `
                 <div style="overflow-x: auto; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; background-color: white;">
                     <table class="data-table" style="font-size: 0.75em; width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th rowspan="2" style="vertical-align: middle; min-width: 40px; text-align: center; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: 1px solid #2980b9; padding: 8px 5px;">No</th>
-                                <th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: 1px solid #2980b9; padding: 8px 5px;">Truck No</th>
+                                <th rowspan="2" style="vertical-align: middle; min-width: 40px; text-align: center; background: ${headerColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 8px 5px;">No</th>
+                                <th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: ${headerColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 8px 5px;">Truck No</th>
             `;
             
-            // PERUBAHAN: Tambahkan header jam dengan warna biru untuk semua kolom (00-23)
+            // Tambahkan header jam dengan warna sesuai tipe truck
             hours.forEach(hour => {
                 const hourLabel = hour.replace(':00', '');
-                // SEMUA JAM MENGGUNAKAN HEADER BIRU
-                tableHTML += `<th style="min-width: 40px; text-align: center; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: 1px solid #2980b9 !important; padding: 8px 3px;">
+                tableHTML += `<th style="min-width: 40px; text-align: center; background: ${headerColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#229954'} !important; padding: 8px 3px;">
                     <div style="font-weight: bold; font-size: 0.9em;">${hourLabel}</div>
-                    <!-- HILANGKAN TEKS "JAM" DI BAWAH ANGKA -->
                 </th>`;
             });
             
-            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 60px; text-align: center; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: 1px solid #c0392b; padding: 8px 5px;">
+            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 60px; text-align: center; background: ${totalHeaderColor}; color: white; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'}; padding: 8px 5px;">
                     <div>TOTAL</div>
                 </th>`;
             tableHTML += `</tr>`;
-            
-            // PERUBAHAN: Hapus baris kedua header (tidak perlu lagi)
             tableHTML += `</thead><tbody>`;
             
             // Tambahkan data per truk
@@ -2571,11 +2590,11 @@
                     tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px;" class="${cellClass}">${tripCount}</td>`;
                 });
                 
-                // NEW: Tentukan warna untuk kolom Total berdasarkan rata-rata trip per hari
+                // Tentukan warna untuk kolom Total berdasarkan rata-rata trip per hari
                 const avgDailyTrips = truckDailyAverages[truckNo];
                 let totalCellClass = 'total-avg-high'; // Default hijau untuk avg ≥ 3
                 
-                // PERUBAHAN: Kriteria sesuai permintaan
+                // Kriteria sesuai permintaan
                 if (avgDailyTrips < 2) {
                     totalCellClass = 'total-avg-low'; // Merah gradient untuk avg < 2 (termasuk =1)
                 } else if (avgDailyTrips >= 2 && avgDailyTrips < 3) {
@@ -2583,7 +2602,7 @@
                 }
                 // avg >= 3 tetap hijau (total-avg-high)
                 
-                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #c0392b; padding: 6px 3px;" class="${totalCellClass}">${totalTrips}</td>`;
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'}; padding: 6px 3px;" class="${totalCellClass}">${totalTrips}</td>`;
 
             });
             
@@ -2595,44 +2614,51 @@
             
             let grandTotal = 0;
             hours.forEach(hour => {
-                const hourTotal = analysis.hourlyTrips[hour]?.total || 0;
+                // Hitung total per jam untuk truck type ini
+                let hourTotal = 0;
+                truckNos.forEach(truckNo => {
+                    hourTotal += analysis.hourlyTripsByTruck[truckNo]?.[hour] || 0;
+                });
                 grandTotal += hourTotal;
                 tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: rgba(255, 255, 255, 0.1);">${hourTotal}</td>`;
             });
             
-            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #c0392b; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
                 ${grandTotal}
             </td>`;
             tableHTML += `</tr>`;
             
             // Tambahkan baris persentase per jam
-            tableHTML += `<tr style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: white;">
-                <td colspan="2" style="text-align: center; font-weight: bold; border: 1px solid #229954; padding: 6px 5px;">
+            tableHTML += `<tr style="background: ${headerColor}; color: white;">
+                <td colspan="2" style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 6px 5px;">
                     <div>% of Total</div>
                 </td>`;
             
             hours.forEach(hour => {
-                const hourTotal = analysis.hourlyTrips[hour]?.total || 0;
+                let hourTotal = 0;
+                truckNos.forEach(truckNo => {
+                    hourTotal += analysis.hourlyTripsByTruck[truckNo]?.[hour] || 0;
+                });
                 const percentage = grandTotal > 0 ? ((hourTotal / grandTotal) * 100).toFixed(1) : 0;
-                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #229954; padding: 6px 3px; background: rgba(255, 255, 255, 0.1);">
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 6px 3px; background: rgba(255, 255, 255, 0.1);">
                     ${percentage}%
                 </td>`;
             });
             
-            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #229954; padding: 6px 3px;">
+            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 6px 3px;">
                 100%
             </td>`;
             tableHTML += `</tr>`;
             
             tableHTML += `</tbody></table></div>`;
             
-            // Tambahkan legenda dengan penjelasan warna kolom Total
+            // Tambahkan legenda dengan penjelasan warna
             tableHTML += `
-                <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; border-left: 4px solid #3498db;">
-                    <p style="font-size: 0.85em; color: #2c3e50; margin-bottom: 10px; font-weight: bold;">📊 LEGENDA WARNA:</p>
+                <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; border-left: 4px solid ${isBig ? '#3498db' : '#27ae60'};">
+                    <p style="font-size: 0.85em; color: #2c3e50; margin-bottom: 10px; font-weight: bold;">📊 LEGENDA WARNA - ${truckType}:</p>
                     <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #2980b9;"></div>
+                            <div style="width: 20px; height: 20px; background: ${headerColor}; margin-right: 8px; border-radius: 3px; border: 1px solid ${isBig ? '#2980b9' : '#229954'};"></div>
                             <div>
                                 <span style="font-size: 0.8em; font-weight: bold;">Header Jam</span><br>
                                 <span style="font-size: 0.7em; color: #7f8c8d;">Semua jam 00-23</span>
@@ -2640,10 +2666,19 @@
                         </div>
                         <!-- Warna untuk kolom Total -->
                         <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: ${totalHeaderColor}; margin-right: 8px; border-radius: 3px; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'};"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Total Header</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Kolom total trips</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center;">
                             <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #c0392b;"></div>
                             <div>
                                 <span style="font-size: 0.8em; font-weight: bold;">Total (Avg < 2)</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata < 2 trip/hari (termasuk =1)</span>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata < 2 trip/hari</span>
                             </div>
                         </div>
                         <div style="display: flex; align-items: center;">
@@ -2660,6 +2695,7 @@
                                 <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata ≥ 3 trip/hari</span>
                             </div>
                         </div>
+                    </div>
                     <div style="display: flex; flex-wrap: wrap; gap: 15px;">
                         <div style="display: flex; align-items: center;">
                             <div style="width: 20px; height: 20px; background-color: #e74c3c; margin-right: 8px; border-radius: 3px; border: 1px solid #c0392b;"></div>
@@ -2707,6 +2743,16 @@
             const isBig = tabType === 'Big';
             const truckType = isBig ? 'TM Big' : 'TM Mini';
             
+            // Filter truck numbers untuk truck type ini
+            const truckNos = Object.keys(analysis.hourlyTripsByTruck).filter(truckNo => {
+                const truckData = analysis.tripsByTruckNo[truckNo];
+                return truckData && truckData.truckType === truckType;
+            });
+            
+            if (truckNos.length === 0) {
+                return;
+            }
+            
             // Generate jam dari 00:00 hingga 23:00
             const hours = [];
             const hourLabels = [];
@@ -2717,22 +2763,15 @@
                 hours.push(hourStr);
                 hourLabels.push(hourStr.replace(':00', ''));
                 
-                // PERUBAHAN: Semua jam biru (sesuai permintaan)
-                hourColors.push('#3498db'); // Semua jam biru
+                // Warna berbeda untuk TM Big dan TM Mini
+                hourColors.push(isBig ? '#3498db' : '#27ae60');
             }
             
             // Hitung total trip per jam untuk truck type ini
             const tripsPerHour = hours.map(hour => {
-                const hourData = analysis.hourlyTrips[hour];
-                if (!hourData) return 0;
-                
-                // Kita perlu filter berdasarkan truck type
                 let total = 0;
-                Object.keys(analysis.hourlyTripsByTruck).forEach(truckNo => {
-                    const truckData = analysis.tripsByTruckNo[truckNo];
-                    if (truckData && truckData.truckType === truckType) {
-                        total += analysis.hourlyTripsByTruck[truckNo]?.[hour] || 0;
-                    }
+                truckNos.forEach(truckNo => {
+                    total += analysis.hourlyTripsByTruck[truckNo]?.[hour] || 0;
                 });
                 return total;
             });
@@ -2753,7 +2792,7 @@
             
             const layout = {
                 title: {
-                    text: '📊 Distribusi Trip per Jam (00:00 - 23:00)',
+                    text: `📊 Distribusi Trip per Jam (00:00 - 23:00) - ${truckType}`,
                     font: { size: 16, color: '#2c3e50' }
                 },
                 yaxis: { 
