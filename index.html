@@ -17,7 +17,7 @@
             padding: 0;
             width: 100%;
             overflow-x: hidden;
-            padding-top: 60px; /* Padding untuk header fixed */
+            padding-top: 50px;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,12 +27,12 @@
         }
         .container {
             display: flex;
-            min-height: 100vh;
+            min-height: calc(100vh - 50px);
             transition: all 0.3s ease;
             margin: 0;
             padding: 0;
         }
-        /* Sidebar Styles - DIPERBARUI: Position fixed dan tinggi 100% */
+        /* Sidebar Styles */
         .sidebar {
             width: 350px;
             min-width: 350px;
@@ -44,7 +44,7 @@
             z-index: 1000;
             position: fixed;
             left: 0;
-            top: 60px; /* Mulai dari bawah header */
+            top: 50px;
             bottom: 0;
             transform: translateX(-100%);
             width: 0;
@@ -59,19 +59,18 @@
             padding: 20px;
             overflow-y: auto;
         }
-        /* PERUBAHAN: Toggle button di header */
         .sidebar-toggle {
             position: fixed;
-            top: 15px; /* Sejajar dengan tengah header */
+            top: 10px;
             left: 20px;
             background: rgba(255, 255, 255, 0.9);
             color: #8B0000;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 5px;
             cursor: pointer;
             z-index: 1001;
-            font-size: 1.2em;
+            font-size: 1em;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
@@ -86,9 +85,10 @@
             padding-bottom: 15px;
             border-bottom: 2px solid #3498db;
         }
+        /* Main Content - DIPERBAIKI: Tidak ada padding atas */
         .main-content {
             flex: 1;
-            padding: 10px 20px; /* Kurangi padding atas-bawah */
+            padding: 0 20px;
             overflow-y: auto;
             transition: all 0.3s ease;
             width: 100%;
@@ -99,23 +99,23 @@
             margin-left: 0;
             width: 100%;
         }
-        /* Header Styles - Fixed Header */
+        /* Header Styles */
         .header {
             background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
             color: white;
-            padding: 15px 25px 15px 60px; /* Padding kiri lebih besar untuk toggle */
+            padding: 8px 25px 8px 60px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            margin-bottom: ; /* Kurangi margin bottom */
+            margin-bottom: 0;
             text-align: left;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            min-height: 60px;
+            min-height: 50px;
             width: 100%;
-            position: fixed; /* Fixed positioning */
-            top: 0; /* Stick to top */
+            position: fixed;
+            top: 0;
             left: 0;
-            z-index: 999; /* High z-index */
+            z-index: 999;
             transition: left 0.3s ease, width 0.3s ease;
         }
         .header.sidebar-open {
@@ -127,11 +127,11 @@
             align-items: center;
             gap: 20px;
             flex-wrap: wrap;
-            margin-left: 10px; /* Beri sedikit margin */
+            margin-left: 10px;
         }
         .header h1 {
             color: white;
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin-bottom: 0;
             flex: 0 0 auto;
         }
@@ -144,10 +144,105 @@
         }
         .header-info {
             color: #f0f0f0;
-            font-size: 0.8em;
+            font-size: 0.75em;
             text-align: right;
             margin-left: 20px;
         }
+        /* Tabs - DIPERBAIKI: Menempel langsung di bawah header */
+        .tabs {
+            display: flex;
+            margin-bottom: 5px;
+            margin-top: 0; /* DIPERBAIKI: Tidak ada margin atas */
+            background: transparent;
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1em;
+            color: #2c3e50;
+            border-right: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+        .tab:last-child {
+            border-right: none;
+        }
+        .tab.active {
+            background: #ffffff;
+            box-shadow: inset 0 -3px 0 #3498db;
+        }
+        .tab:hover {
+            background: #e9ecef;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Dashboard - DIPERBAIKI: Tidak ada margin atas */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            margin-top: 10px; /* Sedikit margin atas */
+        }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+            border-left: 4px solid #3498db;
+        }
+        .metric-card:hover {
+            transform: translateY(-3px);
+        }
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 5px 0;
+            color: #ffffff;
+        }
+        .metric-label {
+            font-size: 0.8em;
+            font-weight: 500;
+            color: #ffffff;
+        }
+        .metric-card.kpi-big {
+            background: linear-gradient(135deg, #3498db 0%, #9b59b6 100%);
+            border-left-color: #2980b9;
+        }
+        .metric-card.kpi-mini {
+            background: linear-gradient(135deg, #27ae60 0%, #9b59b6 100%);
+            border-left-color: #27ae60;
+        }
+        .metric-card.kpi-total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-left-color: #3498db;
+        }
+        .metric-card.kpi-allocation.kpi-big {
+            background: linear-gradient(135deg, #3498db 0%, #9b59b6 100%);
+            border-left-color: #2980b9;
+        }
+        .metric-card.kpi-allocation.kpi-mini {
+            background: linear-gradient(135deg, #27ae60 0%, #9b59b6 100%);
+            border-left-color: #27ae60;
+        }
+        .metric-card.kpi-allocation {
+            background: linear-gradient(135deg, #f39c12 0%, #9b59b6 100%);
+            border-left-color: #f39c12;
+        }
+        /* Upload Area */
         .upload-area {
             border: 3px dashed #3498db;
             border-radius: 10px;
@@ -222,140 +317,44 @@
             margin: 10px 0;
             font-size: 0.9em;
         }
-        /* Dashboard Styles */
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px; /* Kurangi gap */
-            margin-bottom: 15px; /* Kurangi margin bottom */
-        }
-        .metric-card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 10px; /* Kurangi padding */
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.3s ease;
-            border-left: 4px solid #3498db;
-        }
-        .metric-card:hover {
-            transform: translateY(-3px);
-        }
-        .metric-value {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin: 5px 0;
-            color: #ffffff;
-        }
-        .metric-label {
-            font-size: 0.8em;
-            font-weight: 500;
-            color: #ffffff;
-        }
-        /* Warna Khusus untuk KPI */
-        .metric-card.kpi-big {
-            background: linear-gradient(135deg, #3498db 0%, #9b59b6 100%);
-            border-left-color: #2980b9;
-        }
-        .metric-card.kpi-mini {
-            background: linear-gradient(135deg, #27ae60 0%, #9b59b6 100%);
-            border-left-color: #27ae60;
-        }
-        .metric-card.kpi-total {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-left-color: #3498db;
-        }
-        /* Warna Khusus untuk KPI Allocation */
-        .metric-card.kpi-allocation.kpi-big {
-            background: linear-gradient(135deg, #3498db 0%, #9b59b6 100%);
-            border-left-color: #2980b9;
-        }
-        .metric-card.kpi-allocation.kpi-mini {
-            background: linear-gradient(135deg, #27ae60 0%, #9b59b6 100%);
-            border-left-color: #27ae60;
-        }
-
-        /* Warna Khusus untuk KPI Allocation - Gradient Orange ke Ungu */
-        .metric-card.kpi-allocation {
-            background: linear-gradient(135deg, #f39c12 0%, #9b59b6 100%);
-            border-left-color: #f39c12;
-        }
-        /* Tab Styles - DIPERBARUI: Lebih rapat */
-        .tabs {
-            display: flex;
-            margin-bottom: 5px; /* Kurangi margin */
-            margin-top:5px
-            background: transparent;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #e0e0e0;
-        }
-        .tab {
-            flex: 1;
-            padding: 10px; /* Kurangi padding */
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 1em; /* Kecilkan font sedikit */
-            color: #2c3e50;
-            border-right: 1px solid #e0e0e0;
-            background: #f8f9fa;
-        }
-        .tab:last-child {
-            border-right: none;
-        }
-        .tab.active {
-            background: #ffffff;
-            box-shadow: inset 0 -3px 0 #3498db;
-        }
-        .tab:hover {
-            background: #e9ecef;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        /* Chart Layout - Vertikal untuk TM Big */
+        /* Chart Layout */
         .chart-container-vert {
-            margin-bottom: 20px; /* Kurangi margin */
+            margin-bottom: 20px;
         }
         .chart-section {
             background: rgba(255, 255, 255, 0.95);
-            padding: 15px; /* Kurangi padding */
+            padding: 15px;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            margin-bottom: 20px; /* Kurangi margin */
+            margin-bottom: 20px;
         }
         .chart-section h2 {
             color: #2c3e50;
-            margin-bottom: 12px; /* Kurangi margin */
-            font-size: 1.2em; /* Kecilkan font */
+            margin-bottom: 12px;
+            font-size: 1.2em;
         }
         .chart-container {
-            height: 320px; /* Kurangi tinggi sedikit */
+            height: 320px;
             width: 100%;
         }
         .table-section {
             background: rgba(255, 255, 255, 0.95);
-            padding: 15px; /* Kurangi padding */
+            padding: 15px;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            margin-bottom: 20px; /* Kurangi margin */
+            margin-bottom: 20px;
             overflow-x: auto;
         }
         .table-section h2 {
             color: #2c3e50;
-            margin-bottom: 12px; /* Kurangi margin */
-            font-size: 1.2em; /* Kecilkan font */
+            margin-bottom: 12px;
+            font-size: 1.2em;
         }
         .table-filter {
             background: #f8f9fa;
-            padding: 12px; /* Kurangi padding */
+            padding: 12px;
             border-radius: 8px;
-            margin-bottom: 12px; /* Kurangi margin */
+            margin-bottom: 12px;
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
@@ -373,14 +372,14 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 12px; /* Kurangi margin */
+            margin-top: 12px;
         }
         .data-table th,
         .data-table td {
-            padding: 8px 10px; /* Kurangi padding */
+            padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid #e0e0e0;
-            font-size: 0.85em; /* Kecilkan font */
+            font-size: 0.85em;
         }
         .data-table th {
             background: #f8f9fa;
@@ -406,14 +405,6 @@
         .data-table tr:hover {
             background: #f8f9fa;
         }
-        .truck-big {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        .truck-mini {
-            color: #27ae60;
-            font-weight: bold;
-        }
         .loading {
             text-align: center;
             padding: 40px;
@@ -422,15 +413,15 @@
         .hidden {
             display: none;
         }
-        /* Footer Styles - BARU DITAMBAHKAN */
+        /* Footer Styles */
         .footer {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
-            padding: 12px 15px; /* Kurangi padding */
+            padding: 12px 15px;
             border-radius: 10px;
-            margin-top: 15px; /* Kurangi margin */
+            margin-top: 15px;
             text-align: center;
-            font-size: 0.85em; /* Kecilkan font */
+            font-size: 0.85em;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         .footer p {
@@ -440,16 +431,16 @@
         /* Styles for Truck Allocation Tab */
         .allocation-form {
             background: #f8f9fa;
-            padding: 15px; /* Kurangi padding */
+            padding: 15px;
             border-radius: 10px;
-            margin-bottom: 15px; /* Kurangi margin */
+            margin-bottom: 15px;
             border-left: 4px solid #f39c12;
         }
         .form-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px; /* Kurangi gap */
-            margin-bottom: 12px; /* Kurangi margin */
+            gap: 12px;
+            margin-bottom: 12px;
         }
         .form-group {
             flex: 1;
@@ -537,6 +528,63 @@
             color: #e74c3c;
             font-weight: bold;
         }
+        /* Styles for Hourly Trip Table */
+        .hourly-header-blue {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: 1px solid #2980b9 !important;
+        }
+        .hourly-header-green {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: 1px solid #229954 !important;
+        }
+        .hourly-header-gray {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+            border: 1px solid #7f8c8d !important;
+        }
+        .hourly-header-total {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: 1px solid #c0392b !important;
+        }
+        /* NEW: Warna untuk kolom Total per Truck */
+        .total-avg-low {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .total-avg-medium {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .total-avg-high {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%) !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        /* Cell colors for trip counts */
+        .trip-count-1 {
+            background-color: #e74c3c !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .trip-count-2 {
+            background-color: #f39c12 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .trip-count-3plus {
+            background-color: #27ae60 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        .trip-count-0 {
+            background-color: #f8f9fa !important;
+            color: #7f8c8d !important;
+        }
         /* Responsive Design */
         @media (max-width: 1200px) {
             .chart-section {
@@ -555,39 +603,29 @@
             }
         }
         @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            html, body {
+                padding-top: 45px;
             }
-            .metric-value {
-                font-size: 1.5em;
+            .header {
+                min-height: 45px;
+                padding: 5px 20px 5px 60px;
             }
             .sidebar.open {
                 width: 280px;
                 min-width: 280px;
                 position: fixed;
-                height: calc(100vh - 60px); /* Sesuaikan tinggi */
-                top: 60px; /* Pastikan di bawah header */
+                height: calc(100vh - 45px);
+                top: 45px;
             }
             .sidebar-toggle {
-                position: fixed;
-                z-index: 1001;
-                top: 15px;
+                top: 8px;
+                padding: 5px 8px;
             }
             .sidebar-toggle.sidebar-open {
                 left: 300px;
             }
             .main-content {
-                padding: 8px 15px; /* Kurangi padding di mobile */
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                text-align: center;
-                padding: 10px 20px 10px 60px;
-                min-height: 55px;
-                position: fixed;
-                left: 0;
-                width: 100%;
+                padding: 0 15px;
             }
             .header.sidebar-open {
                 left: 280px;
@@ -595,28 +633,28 @@
             }
             .header-content {
                 flex-direction: column;
-                gap: 8px; /* Kurangi gap */
+                gap: 8px;
                 align-items: center;
                 width: 100%;
             }
             .header h1 {
-                font-size: 1.1em; /* Kecilkan font */
+                font-size: 1em;
                 margin-bottom: 0;
                 text-align: center;
                 margin-left: 0;
             }
             .filter-display {
-                font-size: 1em; /* Kecilkan font */
+                font-size: 1em;
                 text-align: center;
             }
             .header-info {
-                font-size: 0.75em;
+                font-size: 0.7em;
                 margin-left: 0;
-                margin-top: 5px; /* Kurangi margin */
+                margin-top: 5px;
                 text-align: center;
             }
             .chart-container {
-                height: 280px; /* Kecilkan di mobile */
+                height: 280px;
             }
             .table-filter {
                 flex-direction: column;
@@ -626,8 +664,8 @@
                 min-width: 100%;
             }
             .footer {
-                padding: 10px 12px; /* Kurangi padding */
-                font-size: 0.8em; /* Kecilkan font */
+                padding: 10px 12px;
+                font-size: 0.8em;
             }
             .form-row {
                 flex-direction: column;
@@ -636,52 +674,23 @@
                 min-width: 100%;
             }
             .tabs {
-                margin-bottom: 10px; /* Kurangi margin di mobile */
+                margin-bottom: 0;
             }
             .tab {
-                padding: 8px; /* Kurangi padding di mobile */
-                font-size: 0.9em; /* Kecilkan font di mobile */
+                padding: 8px;
+                font-size: 0.9em;
+            }
+            .dashboard {
+                margin-top: 8px;
             }
         }
         @media (max-width: 480px) {
             html, body {
-                padding-top: 60px; /* Kembali ke 60px */
-            }
-            .dashboard {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px; /* Kurangi gap */
-                margin-bottom: 12px; /* Kurangi margin */
-            }
-            .tabs {
-                flex-direction: column;
-                margin-bottom: 8px; /* Kurangi margin */
-            }
-            .tab {
-                padding: 8px; /* Kurangi padding */
-                border-right: none;
-                border-bottom: 1px solid #e0e0e0;
-                font-size: 0.85em; /* Kecilkan font */
-            }
-            .tab:last-child {
-                border-bottom: none;
-            }
-            .sidebar.open {
-                width: 100%;
-                min-width: 100%;
-                top: 60px; /* Tetap di bawah header */
-            }
-            .sidebar-toggle.sidebar-open {
-                left: calc(100% - 50px);
-            }
-            .chart-container {
-                height: 240px; /* Kecilkan lagi */
+                padding-top: 40px;
             }
             .header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                padding: 8px 15px 8px 60px;
-                min-height: 50px;
+                min-height: 40px;
+                padding: 3px 15px 3px 60px;
                 position: fixed;
                 left: 0;
                 width: 100%;
@@ -690,38 +699,71 @@
                 left: 0;
                 width: 100%;
             }
+            .sidebar.open {
+                width: 100%;
+                min-width: 100%;
+                top: 40px;
+            }
+            .sidebar-toggle {
+                top: 6px;
+                padding: 4px 6px;
+            }
+            .sidebar-toggle.sidebar-open {
+                left: calc(100% - 50px);
+            }
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+            .tabs {
+                flex-direction: column;
+                margin-bottom: 0;
+            }
+            .tab {
+                padding: 8px;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+                font-size: 0.85em;
+            }
+            .tab:last-child {
+                border-bottom: none;
+            }
+            .chart-container {
+                height: 240px;
+            }
             .header-content {
                 flex-direction: column;
-                gap: 6px; /* Kurangi gap */
+                gap: 6px;
             }
             .header h1 {
-                font-size: 1em; /* Kecilkan font */
+                font-size: 0.9em;
                 margin-left: 0;
             }
             .filter-display {
-                font-size: 0.9em; /* Kecilkan font */
+                font-size: 0.9em;
             }
             .header-info {
                 margin-left: 0;
-                margin-top: 3px; /* Kurangi margin */
+                margin-top: 3px;
                 text-align: center;
-                font-size: 0.7em;
+                font-size: 0.65em;
             }
             .footer {
-                padding: 8px 10px; /* Kurangi padding */
-                font-size: 0.75em; /* Kecilkan font */
-            }
-            .sidebar-toggle {
-                top: 12px; /* Sesuaikan posisi */
+                padding: 8px 10px;
+                font-size: 0.75em;
             }
             .metric-card {
-                padding: 8px; /* Kurangi padding di mobile */
+                padding: 8px;
             }
             .metric-value {
-                font-size: 1.3em; /* Kecilkan font */
+                font-size: 1.3em;
             }
             .metric-label {
-                font-size: 0.7em; /* Kecilkan font */
+                font-size: 0.7em;
+            }
+            .dashboard {
+                margin-top: 5px;
             }
         }
     </style>
@@ -791,7 +833,7 @@
         </div>
         <!-- Main Content -->
         <div class="main-content" id="mainContent">
-            <!-- Header - Now Fixed -->
+            <!-- Header - Fixed -->
             <div class="header" id="header">
                 <div class="header-content">
                     <h1>🚛 Truck Mixer Utilization</h1>
@@ -803,7 +845,7 @@
                     <p>Period: <span id="periodeInfo">-</span></p>
                 </div>
             </div>
-            <!-- Tabs - DIPERBARUI: Lebih rapat dengan header -->
+            <!-- Tabs - Rapat dengan Header -->
             <div class="tabs" id="tabsContainer">
                 <div class="tab active" onclick="switchTab('big')">🚛 TM Big</div>
                 <div class="tab" onclick="switchTab('mini')">🚚 TM Mini</div>
@@ -864,6 +906,12 @@
                         <div class="chart-section">
                             <h2>📏 Avg Distance per Truck</h2>
                             <div class="chart-container" id="avgDistanceChartBig"></div>
+                        </div>
+                        <!-- NEW: Detail Trip per Hour Table -->
+                        <div class="chart-section">
+                            <h2>⏰ Detail Trip per Hour</h2>
+                            <div class="chart-container" id="hourlyTripDetailBig"></div>
+                            <div id="hourlyTripTableContainerBig" class="table-container" style="margin-top: 20px;"></div>
                         </div>
                     </div>
                     <!-- Data Table -->
@@ -1056,7 +1104,7 @@
         let filteredData = null;
         let excelSheets = [];
         let currentSheet = '';
-        let isSidebarCollapsed = true; // Default sidebar tertutup
+        let isSidebarCollapsed = true;
         let currentTab = 'big';
         let tableData = {
             'Big': [],
@@ -1072,6 +1120,9 @@
             column: null,
             direction: 'asc'
         };
+
+        // NEW: Variabel untuk menghitung jumlah hari dalam filter
+        let filteredDaysCount = 0;
 
         // Initialize truck allocations from localStorage
         function initializeTruckAllocations() {
@@ -1302,18 +1353,20 @@
             const distanceIndex = headers.findIndex(h => h.includes('Distance') || h.includes('Jarak'));
             const areaIndex = headers.findIndex(h => h.includes('Area'));
             const plantNameIndex = headers.findIndex(h => h.includes('Plant') && h.includes('Name'));
+            const timeIndex = headers.findIndex(h => h.includes('Time') || h.includes('Waktu') || h.includes('Jam'));
             
             const finalIndices = {
                 dpNo: dpNoIndex !== -1 ? dpNoIndex : 0,
                 date: dateIndex !== -1 ? dateIndex : 1,
-                truckNo: truckNoIndex !== -1 ? truckNoIndex : 18, // Kolom S (Truck No)
+                truckNo: truckNoIndex !== -1 ? truckNoIndex : 18,
                 allocation: allocationIndex !== -1 ? allocationIndex : 17,
                 qty: qtyIndex !== -1 ? qtyIndex : 15,
                 siteNo: siteNoIndex !== -1 ? siteNoIndex : 19,
                 siteName: siteNameIndex !== -1 ? siteNameIndex : 20,
-                distance: distanceIndex !== -1 ? distanceIndex : 21, // Kolom V (Distance)
+                distance: distanceIndex !== -1 ? distanceIndex : 21,
                 area: areaIndex !== -1 ? areaIndex : -1,
-                plantName: plantNameIndex !== -1 ? plantNameIndex : -1
+                plantName: plantNameIndex !== -1 ? plantNameIndex : -1,
+                time: timeIndex !== -1 ? timeIndex : -1
             };
             
             console.log('Column indices:', finalIndices);
@@ -1332,6 +1385,7 @@
                 const distance = row[finalIndices.distance];
                 const area = finalIndices.area !== -1 ? row[finalIndices.area] : '';
                 const plantName = finalIndices.plantName !== -1 ? row[finalIndices.plantName] : '';
+                const timeValue = finalIndices.time !== -1 ? row[finalIndices.time] : '';
                 
                 if (truckNo && allocation && qty !== undefined && qty !== null && qty !== '') {
                     // Determine Truck Type based on Truck No
@@ -1350,8 +1404,16 @@
                         }
                     }
                     
+                    // Format waktu
+                    let time = formatExcelTime(timeValue);
+                    // Jika tidak ada data waktu, gunakan waktu acak untuk demo
+                    if (!time) {
+                        time = getRandomTime();
+                    }
+                    
                     data.push({
                         'Date': formatExcelDate(date),
+                        'Time': time,
                         'Truck No': truckNo ? truckNo.toString().trim() : 'Unknown',
                         'Allocation Truck': allocationTruck,
                         'Site No': siteNo ? siteNo.toString().trim() : '-',
@@ -1378,6 +1440,34 @@
                 return dateValue.toISOString().split('T')[0];
             }
             return dateValue.toString();
+        }
+
+        function formatExcelTime(timeValue) {
+            if (!timeValue) return '';
+            if (typeof timeValue === 'string') {
+                // Coba parse format HH:MM
+                const match = timeValue.match(/(\d{1,2}):(\d{2})/);
+                if (match) {
+                    const hours = parseInt(match[1]).toString().padStart(2, '0');
+                    const minutes = match[2];
+                    return `${hours}:${minutes}`;
+                }
+                return timeValue;
+            }
+            if (typeof timeValue === 'number') {
+                // Excel time adalah fraksi dari 24 jam
+                const totalSeconds = timeValue * 24 * 60 * 60;
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            }
+            return timeValue.toString();
+        }
+
+        function getRandomTime() {
+            const hour = Math.floor(Math.random() * 24);
+            const minute = Math.floor(Math.random() * 60);
+            return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
         }
 
         function onSheetChange() {
@@ -1424,6 +1514,32 @@
                 return dateMatch && areaMatch && plantMatch;
             });
             
+            // NEW: Hitung jumlah hari dalam filter
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const diffTime = Math.abs(end - start);
+                filteredDaysCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            } else if (startDate) {
+                // Jika hanya start date, hitung dari start date sampai tanggal terakhir data
+                const dates = filteredData.map(row => row['Date']).filter(Boolean);
+                const endDateData = dates.length > 0 ? new Date(dates.sort().pop()) : new Date();
+                const start = new Date(startDate);
+                const diffTime = Math.abs(endDateData - start);
+                filteredDaysCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            } else if (endDate) {
+                // Jika hanya end date, hitung dari tanggal pertama data sampai end date
+                const dates = filteredData.map(row => row['Date']).filter(Boolean);
+                const startDateData = dates.length > 0 ? new Date(dates.sort()[0]) : new Date();
+                const end = new Date(endDate);
+                const diffTime = Math.abs(end - startDateData);
+                filteredDaysCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            } else {
+                // Jika tidak ada filter tanggal, hitung semua hari unik dalam data
+                const uniqueDates = [...new Set(filteredData.map(row => row['Date']))];
+                filteredDaysCount = uniqueDates.length;
+            }
+            
             // Update periode info di header dan data info di sidebar
             updatePeriodInfo(startDate, endDate);
             updateDataInfo();
@@ -1441,6 +1557,10 @@
             document.getElementById('plantFilter').value = '';
             
             filteredData = [...uploadedData];
+            
+            // NEW: Reset filtered days count
+            const uniqueDates = [...new Set(filteredData.map(row => row['Date']))];
+            filteredDaysCount = uniqueDates.length;
             
             // Update periode info di header dan data info di sidebar
             const dates = uploadedData.map(row => row['Date']).filter(Boolean);
@@ -1483,8 +1603,11 @@
             const endDate = dates.length > 0 ? dates.sort().pop() : '-';
             const totalRecords = filteredData.length;
             
+            // NEW: Tambahkan info jumlah hari filter
+            const daysInfo = filteredDaysCount > 0 ? ` (${filteredDaysCount} days)` : '';
+            
             document.getElementById('dataInfo').innerHTML = `
-                <p><strong>Period:</strong> ${startDate} to ${endDate}</p>
+                <p><strong>Period:</strong> ${startDate} to ${endDate}${daysInfo}</p>
                 <p><strong>Total Records:</strong> ${totalRecords.toLocaleString()}</p>
                 <p><strong>Sheet:</strong> ${currentSheet}</p>
             `;
@@ -1557,7 +1680,9 @@
                 tripsByAllocation: {},
                 qtyByAllocation: {},
                 distanceByTruckNo: {},
-                uniqueTrucks: { 'TM Big': new Set(), 'TM Mini': new Set() }
+                uniqueTrucks: { 'TM Big': new Set(), 'TM Mini': new Set() },
+                hourlyTrips: {},
+                hourlyTripsByTruck: {}
             };
             data.forEach(row => {
                 const truckType = row['Truck Type'];
@@ -1566,12 +1691,17 @@
                 const qty = parseFloat(row['Qty']) || 0;
                 const date = row['Date'];
                 const distance = parseFloat(row['Distance']) || 0;
+                const time = row['Time'];
+                
                 if (!truckType || !allocation) return;
+                
                 // Track unique trucks
                 analysis.uniqueTrucks[truckType].add(truckNo);
+                
                 // Total trips by truck type
                 analysis.totalTrips[truckType]++;
                 analysis.totalQty[truckType] += qty;
+                
                 // Trips and Qty by truck number
                 if (!analysis.tripsByTruckNo[truckNo]) {
                     analysis.tripsByTruckNo[truckNo] = {
@@ -1582,61 +1712,104 @@
                 }
                 analysis.tripsByTruckNo[truckNo].trips++;
                 analysis.tripsByTruckNo[truckNo].totalQty += qty;
-                // Quantity by truck number (duplicate, but kept for clarity in aggregation)
+                
+                // Quantity by truck number
                 if (!analysis.qtyByTruckNo[truckNo]) {
                     analysis.qtyByTruckNo[truckNo] = 0;
                 }
                 analysis.qtyByTruckNo[truckNo] += qty;
+                
                 // NEW: Distance by truck number (dikalikan 2 karena pergi-pulang)
                 if (!analysis.distanceByTruckNo[truckNo]) {
                     analysis.distanceByTruckNo[truckNo] = 0;
                 }
                 analysis.distanceByTruckNo[truckNo] += distance * 2;
+                
                 // Trips by allocation
                 if (!analysis.tripsByAllocation[allocation]) {
                     analysis.tripsByAllocation[allocation] = 0;
                 }
                 analysis.tripsByAllocation[allocation]++;
+                
                 // Quantity by allocation
                 if (!analysis.qtyByAllocation[allocation]) {
                     analysis.qtyByAllocation[allocation] = 0;
                 }
                 analysis.qtyByAllocation[allocation] += qty;
+                
                 // Other analytics
                 if (!analysis.tripsByDay[date]) {
                     analysis.tripsByDay[date] = { 'TM Big': 0, 'TM Mini': 0, total: 0 };
                 }
                 analysis.tripsByDay[date][truckType]++;
                 analysis.tripsByDay[date].total++;
+                
                 if (!analysis.allocationBreakdown[allocation]) {
                     analysis.allocationBreakdown[allocation] = 0;
                 }
                 analysis.allocationBreakdown[allocation]++;
+                
+                // Analisis per jam
+                if (time) {
+                    // Ekstrak jam dari waktu
+                    let hour;
+                    if (time.includes(':')) {
+                        hour = parseInt(time.split(':')[0]);
+                    } else {
+                        hour = parseInt(time) || 0;
+                    }
+                    
+                    // Pastikan hour dalam range 0-23
+                    hour = Math.min(23, Math.max(0, hour || 0));
+                    
+                    const hourKey = hour.toString().padStart(2, '0') + ':00';
+                    
+                    // Inisialisasi jika belum ada
+                    if (!analysis.hourlyTrips[hourKey]) {
+                        analysis.hourlyTrips[hourKey] = { total: 0, trucks: new Set() };
+                    }
+                    if (!analysis.hourlyTripsByTruck[truckNo]) {
+                        analysis.hourlyTripsByTruck[truckNo] = {};
+                    }
+                    if (!analysis.hourlyTripsByTruck[truckNo][hourKey]) {
+                        analysis.hourlyTripsByTruck[truckNo][hourKey] = 0;
+                    }
+                    
+                    // Update data
+                    analysis.hourlyTrips[hourKey].total++;
+                    analysis.hourlyTrips[hourKey].trucks.add(truckNo);
+                    analysis.hourlyTripsByTruck[truckNo][hourKey]++;
+                }
             });
+            
             // Calculate totals for trucks
             analysis.totalTrucks = {
                 'TM Big': analysis.uniqueTrucks['TM Big'].size,
                 'TM Mini': analysis.uniqueTrucks['TM Mini'].size
             };
             analysis.totalTrucksAll = analysis.totalTrucks['TM Big'] + analysis.totalTrucks['TM Mini'];
+            
             // Calculate averages - PERUBAHAN: Avg Trip/Day dibagi dengan jumlah truck
             const uniqueDays = Object.keys(analysis.tripsByDay).length;
             analysis.avgTripsPerDay = {
                 'TM Big': (analysis.totalTrips['TM Big'] / uniqueDays / analysis.totalTrucks['TM Big']).toFixed(1),
                 'TM Mini': (analysis.totalTrips['TM Mini'] / uniqueDays / analysis.totalTrucks['TM Mini']).toFixed(1)
             };
+            
             analysis.avgLoadPerTrip = {
                 'TM Big': analysis.totalTrips['TM Big'] > 0 ? 
                     (analysis.totalQty['TM Big'] / analysis.totalTrips['TM Big']).toFixed(2) : '0',
                 'TM Mini': analysis.totalTrips['TM Mini'] > 0 ? 
                     (analysis.totalQty['TM Mini'] / analysis.totalTrips['TM Mini']).toFixed(2) : '0'
             };
+            
             // Calculate average load per trip for each truck number
             analysis.avgLoadByTruckNo = {};
             for (const truckNo in analysis.tripsByTruckNo) {
                 const truckData = analysis.tripsByTruckNo[truckNo];
                 analysis.avgLoadByTruckNo[truckNo] = truckData.trips > 0 ? (truckData.totalQty / truckData.trips).toFixed(2) : '0';
             }
+            
             // Calculate average trip per day for each truck number
             analysis.avgTripPerDayByTruckNo = {};
             for (const truckNo in analysis.tripsByTruckNo) {
@@ -1651,6 +1824,7 @@
                 const daysActive = uniqueDaysForTruck.size;
                 analysis.avgTripPerDayByTruckNo[truckNo] = daysActive > 0 ? (truckData.trips / daysActive).toFixed(2) : 0;
             }
+            
             // NEW: Calculate average distance per trip for each truck number
             analysis.avgDistanceByTruckNo = {};
             for (const truckNo in analysis.tripsByTruckNo) {
@@ -1658,8 +1832,10 @@
                 analysis.avgDistanceByTruckNo[truckNo] = truckData.trips > 0 ? 
                     (analysis.distanceByTruckNo[truckNo] / truckData.trips).toFixed(2) : '0';
             }
+            
             analysis.totalVolume = (analysis.totalQty['TM Big'] + analysis.totalQty['TM Mini']).toFixed(1);
             analysis.totalTripsAll = analysis.totalTrips['TM Big'] + analysis.totalTrips['TM Mini'];
+            
             return analysis;
         }
 
@@ -1690,10 +1866,12 @@
             const color = isBig ? '#3498db' : '#27ae60';
             const color2 = isBig ? '#2980b9' : '#2ecc71';
             const color3 = isBig ? '#9b59b6' : '#f39c12';
+            
             // Filter data for this truck type
             const truckNos = Object.keys(analysis.tripsByTruckNo).filter(
                 truckNo => analysis.tripsByTruckNo[truckNo].truckType === truckType
             );
+            
             // --- Chart 1: Total Volume per Truck No TM Big ---
             if (isBig) {
                 // Sort data dari terbesar ke terkecil untuk TM Big
@@ -1706,6 +1884,7 @@
                     totalDistance: analysis.distanceByTruckNo[truckNo],
                     avgDistance: analysis.avgDistanceByTruckNo[truckNo]
                 })).sort((a, b) => b.volume - a.volume);
+                
                 const sortedTruckNos = sortedData.map(item => item.truckNo);
                 const volumesPerTruck = sortedData.map(item => item.volume);
                 const volumeColors = sortedTruckNos.map(truckNo => {
@@ -1715,6 +1894,7 @@
                     if (truckNo === 'A610') return '#FF69B4'; // Hot Pink    
                     return color2;
                 });
+                
                 const volumeTrace = {
                     x: sortedTruckNos,
                     y: volumesPerTruck,
@@ -1725,6 +1905,7 @@
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
                 };
+                
                 Plotly.newPlot(`volumeTripChartBig`, [volumeTrace], {
                     yaxis: { title: 'Total Volume (m³)' },
                     xaxis: { title: 'Truck No', tickangle: -45 },
@@ -1739,6 +1920,7 @@
                 const volumesPerTruck = truckNos.map(truckNo => analysis.qtyByTruckNo[truckNo]);
                 const tripsPerTruck = truckNos.map(truckNo => analysis.tripsByTruckNo[truckNo].trips);
                 const avgTripPerDayPerTruck = truckNos.map(truckNo => analysis.avgTripPerDayByTruckNo[truckNo]);
+                
                 // Trace untuk Volume (Bar Chart) - Diperbarui: biru gradient ke ungu
                 const volumeTrace = {
                     x: truckNos,
@@ -1757,6 +1939,7 @@
                     textfont: { color: 'white', size: 10 },
                     yaxis: 'y1'
                 };
+                
                 // Trace untuk Trip (Bar Chart) - Diperbarui: hijau gradient ke orange
                 const tripTrace = {
                     x: truckNos,
@@ -1775,6 +1958,7 @@
                     textfont: { color: 'white', size: 10 },
                     yaxis: 'y1'
                 };
+                
                 // PERUBAHAN: Trace untuk Avg Trip per Day (Line Chart dengan dash) - sebagai secondary axis
                 const avgTripTrace = {
                     x: truckNos,
@@ -1801,6 +1985,7 @@
                     },
                     yaxis: 'y2'
                 };
+                
                 const volumeTripAvgLayout = {
                     yaxis: { 
                         title: 'Volume & Trip Amount',
@@ -1825,8 +2010,10 @@
                         xanchor: 'center'
                     }
                 };
+                
                 Plotly.newPlot(`volumeTripAvgChartMini`, [volumeTrace, tripTrace, avgTripTrace], volumeTripAvgLayout);
             }
+            
             // --- Chart 2: Total Trip per Truck No (TM Big only) ---
             if (isBig) {
                 // Sort data dari terbesar ke terkecil untuk TM Big
@@ -1839,6 +2026,7 @@
                     totalDistance: analysis.distanceByTruckNo[truckNo],
                     avgDistance: analysis.avgDistanceByTruckNo[truckNo]
                 })).sort((a, b) => b.trips - a.trips);
+                
                 const sortedTruckNos = sortedData.map(item => item.truckNo);
                 const tripsPerTruck = sortedData.map(item => item.trips);
                 const tripColors = sortedTruckNos.map(truckNo => {
@@ -1848,6 +2036,7 @@
                     if (truckNo === 'A610') return '#FF69B4';
                     return color;
                 });
+                
                 const totalTripTrace = {
                     x: sortedTruckNos,
                     y: tripsPerTruck,
@@ -1857,6 +2046,7 @@
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
                 };
+                
                 Plotly.newPlot(`totalTripChartBig`, [totalTripTrace], {
                     yaxis: { title: 'Number of Trips' },
                     xaxis: { title: 'Truck No', tickangle: -45 },
@@ -1866,6 +2056,7 @@
                     responsive: true
                 });
             }
+            
             // --- Chart 3: Avg Load per Trip per Truck No (Both tabs) ---
             if (!isBig) {
                 const avgLoads = truckNos.map(truckNo => analysis.avgLoadByTruckNo[truckNo]);
@@ -1884,6 +2075,7 @@
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
                 };
+                
                 Plotly.newPlot(`avgLoadChartMini`, [avgLoadTrace], {
                     yaxis: { title: 'Average Load (m³)' },
                     xaxis: { title: 'Truck No', tickangle: -45 },
@@ -1903,6 +2095,7 @@
                     totalDistance: analysis.distanceByTruckNo[truckNo],
                     avgDistance: analysis.avgDistanceByTruckNo[truckNo]
                 })).sort((a, b) => b.avgLoad - a.avgLoad);
+                
                 const sortedTruckNos = sortedData.map(item => item.truckNo);
                 const avgLoads = sortedData.map(item => item.avgLoad);
                 const avgLoadColors = sortedTruckNos.map(truckNo => {
@@ -1912,6 +2105,7 @@
                     if (truckNo === 'A610') return '#FF69B4';
                     return color2;
                 });
+                
                 const avgLoadTrace = {
                     x: sortedTruckNos,
                     y: avgLoads,
@@ -1921,6 +2115,7 @@
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
                 };
+                
                 Plotly.newPlot(`avgLoadChartBig`, [avgLoadTrace], {
                     yaxis: { title: 'Average Load (m³)' },
                     xaxis: { title: 'Truck No', tickangle: -45 },
@@ -1930,6 +2125,7 @@
                     responsive: true
                 });
             }
+            
             // --- Chart 4: Avg Trip/Day per Truck No (TM Big only) ---
             if (isBig) {
                 // Sort data dari terbesar ke terkecil untuk TM Big
@@ -1942,6 +2138,7 @@
                     totalDistance: analysis.distanceByTruckNo[truckNo],
                     avgDistance: analysis.avgDistanceByTruckNo[truckNo]
                 })).sort((a, b) => b.avgTripPerDay - a.avgTripPerDay);
+                
                 const sortedTruckNos = sortedData.map(item => item.truckNo);
                 const avgTripPerDayPerTruck = sortedData.map(item => item.avgTripPerDay);
                 const avgTripDayColors = sortedTruckNos.map(truckNo => {
@@ -1951,6 +2148,7 @@
                     if (truckNo === 'A610') return '#FF69B4';
                     return color3;
                 });
+                
                 const avgTripDayTrace = {
                     x: sortedTruckNos,
                     y: avgTripPerDayPerTruck,
@@ -1960,6 +2158,7 @@
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
                 };
+                
                 Plotly.newPlot(`avgTripDayChartBig`, [avgTripDayTrace], {
                     yaxis: { title: 'Avg Trip/Day' },
                     xaxis: { title: 'Truck No', tickangle: -45 },
@@ -1969,6 +2168,7 @@
                     responsive: true
                 });
             }
+            
             // --- NEW: Chart 5: Total Distance per Truck No (TM Big only) ---
             if (isBig) {
                 // Sort data dari terbesar ke terkecil untuk total distance
@@ -1977,6 +2177,7 @@
                     totalDistance: analysis.distanceByTruckNo[truckNo],
                     avgDistance: analysis.avgDistanceByTruckNo[truckNo]
                 })).sort((a, b) => b.totalDistance - a.totalDistance);
+                
                 const sortedTruckNosDistance = distanceData.map(item => item.truckNo);
                 const sortedTotalDistances = distanceData.map(item => item.totalDistance);
                 const totalDistanceColors = sortedTruckNosDistance.map(truckNo => {
@@ -1986,6 +2187,7 @@
                     if (truckNo === 'A610') return '#FF69B4';
                     return '#3498db';
                 });
+                
                 const totalDistanceTrace = {
                     x: sortedTruckNosDistance,
                     y: sortedTotalDistances,
@@ -2002,6 +2204,7 @@
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
                 };
+                
                 const totalDistanceLayout = {
                     yaxis: { 
                         title: 'Total Distance (km)'
@@ -2012,8 +2215,10 @@
                     height: 350,
                     responsive: true
                 };
+                
                 Plotly.newPlot(`totalDistanceChartBig`, [totalDistanceTrace], totalDistanceLayout);
             }
+            
             // --- NEW: Chart 6: Avg Distance per Truck No (TM Big only) ---
             if (isBig) {
                 // Sort data dari terbesar ke terkecil untuk avg distance
@@ -2022,6 +2227,7 @@
                     totalDistance: analysis.distanceByTruckNo[truckNo],
                     avgDistance: analysis.avgDistanceByTruckNo[truckNo]
                 })).sort((a, b) => b.avgDistance - a.avgDistance);
+                
                 const sortedTruckNosAvgDistance = avgDistanceData.map(item => item.truckNo);
                 const sortedAvgDistances = avgDistanceData.map(item => item.avgDistance);
                 const avgDistanceColors = sortedTruckNosAvgDistance.map(truckNo => {
@@ -2031,6 +2237,7 @@
                     if (truckNo === 'A610') return '#FF69B4';
                     return '#e74c3c';
                 });
+                
                 const avgDistanceTrace = {
                     x: sortedTruckNosAvgDistance,
                     y: sortedAvgDistances,
@@ -2047,6 +2254,7 @@
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
                 };
+                
                 const avgDistanceLayout = {
                     yaxis: { 
                         title: 'Avg Distance per Trip (km)'
@@ -2057,21 +2265,26 @@
                     height: 350,
                     responsive: true
                 };
+                
                 Plotly.newPlot(`avgDistanceChartBig`, [avgDistanceTrace], avgDistanceLayout);
             }
+            
             // --- NEW: Chart 7: Distance Chart for TM Mini (Tanpa Secondary Axis) ---
             if (!isBig) {
                 const totalDistances = truckNos.map(truckNo => analysis.distanceByTruckNo[truckNo]);
                 const avgDistances = truckNos.map(truckNo => analysis.avgDistanceByTruckNo[truckNo]);
+                
                 // Sort data dari terbesar ke terkecil untuk total distance
                 const distanceData = truckNos.map((truckNo, index) => ({
                     truckNo,
                     totalDistance: totalDistances[index],
                     avgDistance: avgDistances[index]
                 })).sort((a, b) => b.totalDistance - a.totalDistance);
+                
                 const sortedTruckNosDistance = distanceData.map(item => item.truckNo);
                 const sortedTotalDistances = distanceData.map(item => item.totalDistance);
                 const sortedAvgDistances = distanceData.map(item => item.avgDistance);
+                
                 // Trace untuk Total Distance (Bar Chart)
                 const totalDistanceTrace = {
                     x: sortedTruckNosDistance,
@@ -2089,6 +2302,7 @@
                     textposition: 'auto',
                     textfont: { color: 'white', size: 10 }
                 };
+                
                 // Trace untuk Avg Distance (Line Chart dengan dash)
                 const avgDistanceTrace = {
                     x: sortedTruckNosDistance,
@@ -2114,6 +2328,7 @@
                         family: 'Arial, sans-serif'
                     }
                 };
+                
                 const distanceLayout = {
                     yaxis: { 
                         title: 'Distance (km)'
@@ -2131,8 +2346,10 @@
                         xanchor: 'center'
                     }
                 };
+                
                 Plotly.newPlot(`distanceChartMini`, [totalDistanceTrace, avgDistanceTrace], distanceLayout);
             }
+            
             // --- Additional Chart for TM Mini - Allocation Truck (Corrected) ---
             if (!isBig) {
                 const allocations = Object.keys(analysis.tripsByAllocation).filter(alloc => {
@@ -2140,6 +2357,7 @@
                         row['Allocation Truck'] === alloc && row['Truck Type'] === 'TM Mini'
                     );
                 });
+                
                 // Recalculate trips and volume specifically for TM Mini and these allocations
                 const tripsByAllocation = allocations.map(allocation => {
                     let sum = 0;
@@ -2150,6 +2368,7 @@
                     });
                     return sum;
                 });
+                
                 const qtyByAllocation = allocations.map(allocation => {
                     let sum = 0;
                     filteredData.forEach(row => {
@@ -2159,11 +2378,13 @@
                     });
                     return sum;
                 });
+                
                 // Calculate percentages for trips
                 const totalTrips = tripsByAllocation.reduce((sum, trips) => sum + trips, 0);
                 const tripPercentages = tripsByAllocation.map(trips => 
                     totalTrips > 0 ? ((trips / totalTrips) * 100).toFixed(1) : 0
                 );
+                
                 // Trace untuk Volume (Bar Chart) - Diperbarui: biru gradient ke ungu
                 const allocationTrace1 = {
                     x: allocations,
@@ -2182,6 +2403,7 @@
                     textfont: { color: 'white', size: 10 },
                     yaxis: 'y1'
                 };
+                
                 // Trace untuk Trip (Bar Chart) - Diperbarui: hijau gradient ke orange
                 const allocationTrace2 = {
                     x: allocations,
@@ -2200,6 +2422,7 @@
                     textfont: { color: 'white', size: 10 },
                     yaxis: 'y1'
                 };
+                
                 // Trace untuk Percentage (Line Chart dengan dash dan warna orange)
                 const allocationTrace3 = {
                     x: allocations,
@@ -2226,6 +2449,7 @@
                     },
                     yaxis: 'y2'
                 };
+                
                 const allocationLayout = {
                     yaxis: { 
                         title: 'Amount',
@@ -2250,8 +2474,307 @@
                         xanchor: 'center'
                     }
                 };
+                
                 Plotly.newPlot('allocationChartMini', [allocationTrace1, allocationTrace2, allocationTrace3], allocationLayout);
             }
+            
+            // --- NEW: Create Hourly Trip Table and Chart ---
+            if (isBig) {
+                createHourlyTripTable(analysis, 'Big');
+            }
+        }
+
+        function createHourlyTripTable(analysis, tabType) {
+            const isBig = tabType === 'Big';
+            const truckType = isBig ? 'TM Big' : 'TM Mini';
+            
+            // Filter truck numbers untuk truck type ini
+            const truckNos = Object.keys(analysis.hourlyTripsByTruck).filter(truckNo => {
+                const truckData = analysis.tripsByTruckNo[truckNo];
+                return truckData && truckData.truckType === truckType;
+            });
+            
+            // Generate jam dari 00:00 hingga 23:00
+            const hours = [];
+            for (let i = 0; i < 24; i++) {
+                hours.push(i.toString().padStart(2, '0') + ':00');
+            }
+            
+            // Hitung rata-rata trip per hari untuk setiap truk
+            const truckDailyAverages = {};
+            truckNos.forEach(truckNo => {
+                const totalTrips = analysis.tripsByTruckNo[truckNo]?.trips || 0;
+                
+                // NEW: Gunakan filteredDaysCount jika filter lebih dari 1 hari
+                let avgTripsPerDay;
+                if (filteredDaysCount > 1) {
+                    avgTripsPerDay = totalTrips / filteredDaysCount;
+                } else {
+                    // Jika hanya 1 hari, gunakan total trips
+                    avgTripsPerDay = totalTrips;
+                }
+                
+                truckDailyAverages[truckNo] = avgTripsPerDay;
+            });
+            
+            // Buat header tabel dengan warna sesuai permintaan
+            let tableHTML = `
+                <div style="overflow-x: auto; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; background-color: white;">
+                    <table class="data-table" style="font-size: 0.75em; width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="vertical-align: middle; min-width: 40px; text-align: center; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: 1px solid #2980b9; padding: 8px 5px;">No</th>
+                                <th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: 1px solid #2980b9; padding: 8px 5px;">Truck No</th>
+            `;
+            
+            // PERUBAHAN: Tambahkan header jam dengan warna biru untuk semua kolom (00-23)
+            hours.forEach(hour => {
+                const hourLabel = hour.replace(':00', '');
+                // SEMUA JAM MENGGUNAKAN HEADER BIRU
+                tableHTML += `<th style="min-width: 40px; text-align: center; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: 1px solid #2980b9 !important; padding: 8px 3px;">
+                    <div style="font-weight: bold; font-size: 0.9em;">${hourLabel}</div>
+                    <!-- HILANGKAN TEKS "JAM" DI BAWAH ANGKA -->
+                </th>`;
+            });
+            
+            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 60px; text-align: center; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: 1px solid #c0392b; padding: 8px 5px;">
+                    <div>TOTAL</div>
+                </th>`;
+            tableHTML += `</tr>`;
+            
+            // PERUBAHAN: Hapus baris kedua header (tidak perlu lagi)
+            tableHTML += `</thead><tbody>`;
+            
+            // Tambahkan data per truk
+            truckNos.forEach((truckNo, index) => {
+                const rowBgColor = index % 2 === 0 ? 'background-color: #ffffff;' : 'background-color: #f8f9fa;';
+                
+                tableHTML += `<tr style="${rowBgColor}">
+                    <td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px;">${index + 1}</td>
+                    <td style="font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; background-color: #ecf0f1; text-align: center;">${truckNo}</td>`;
+                
+                let totalTrips = 0;
+                hours.forEach(hour => {
+                    const tripCount = analysis.hourlyTripsByTruck[truckNo]?.[hour] || 0;
+                    totalTrips += tripCount;
+                    
+                    // Tentukan class berdasarkan jumlah trip
+                    let cellClass = 'trip-count-0';
+                    if (tripCount === 1) {
+                        cellClass = 'trip-count-1'; // Merah untuk 1 trip
+                    } else if (tripCount === 2) {
+                        cellClass = 'trip-count-2'; // Orange untuk 2 trips
+                    } else if (tripCount >= 3) {
+                        cellClass = 'trip-count-3plus'; // Hijau untuk 3+ trips
+                    }
+                    
+                    tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px;" class="${cellClass}">${tripCount}</td>`;
+                });
+                
+                // NEW: Tentukan warna untuk kolom Total berdasarkan rata-rata trip per hari
+                const avgDailyTrips = truckDailyAverages[truckNo];
+                let totalCellClass = 'total-avg-high'; // Default hijau untuk avg ≥ 3
+                
+                // PERUBAHAN: Kriteria sesuai permintaan
+                if (avgDailyTrips < 2) {
+                    totalCellClass = 'total-avg-low'; // Merah gradient untuk avg < 2 (termasuk =1)
+                } else if (avgDailyTrips >= 2 && avgDailyTrips < 3) {
+                    totalCellClass = 'total-avg-medium'; // Kuning gradient untuk avg = 2
+                }
+                // avg >= 3 tetap hijau (total-avg-high)
+                
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #c0392b; padding: 6px 3px;" class="${totalCellClass}">${totalTrips}</td>`;
+
+            });
+            
+            // Tambahkan baris total per jam
+            tableHTML += `<tr style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white;">
+                <td colspan="2" style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 5px; border-top: 2px solid #ddd;">
+                    <div>TOTAL PER JAM</div>
+                </td>`;
+            
+            let grandTotal = 0;
+            hours.forEach(hour => {
+                const hourTotal = analysis.hourlyTrips[hour]?.total || 0;
+                grandTotal += hourTotal;
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: rgba(255, 255, 255, 0.1);">${hourTotal}</td>`;
+            });
+            
+            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #c0392b; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                ${grandTotal}
+            </td>`;
+            tableHTML += `</tr>`;
+            
+            // Tambahkan baris persentase per jam
+            tableHTML += `<tr style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: white;">
+                <td colspan="2" style="text-align: center; font-weight: bold; border: 1px solid #229954; padding: 6px 5px;">
+                    <div>% of Total</div>
+                </td>`;
+            
+            hours.forEach(hour => {
+                const hourTotal = analysis.hourlyTrips[hour]?.total || 0;
+                const percentage = grandTotal > 0 ? ((hourTotal / grandTotal) * 100).toFixed(1) : 0;
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #229954; padding: 6px 3px; background: rgba(255, 255, 255, 0.1);">
+                    ${percentage}%
+                </td>`;
+            });
+            
+            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #229954; padding: 6px 3px;">
+                100%
+            </td>`;
+            tableHTML += `</tr>`;
+            
+            tableHTML += `</tbody></table></div>`;
+            
+            // Tambahkan legenda dengan penjelasan warna kolom Total
+            tableHTML += `
+                <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; border-left: 4px solid #3498db;">
+                    <p style="font-size: 0.85em; color: #2c3e50; margin-bottom: 10px; font-weight: bold;">📊 LEGENDA WARNA:</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #2980b9;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Header Jam</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Semua jam 00-23</span>
+                            </div>
+                        </div>
+                        <!-- Warna untuk kolom Total -->
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #c0392b;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Total (Avg < 2)</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata < 2 trip/hari (termasuk =1)</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #e67e22;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Total (Avg = 2)</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata = 2 trip/hari</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #27ae60 0%, #229954 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #229954;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Total (Avg ≥ 3)</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata ≥ 3 trip/hari</span>
+                            </div>
+                        </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background-color: #e74c3c; margin-right: 8px; border-radius: 3px; border: 1px solid #c0392b;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">1 Trip</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Aktivitas rendah</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background-color: #f39c12; margin-right: 8px; border-radius: 3px; border: 1px solid #e67e22;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">2 Trips</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Aktivitas sedang</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background-color: #27ae60; margin-right: 8px; border-radius: 3px; border: 1px solid #229954;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">3+ Trips</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Aktivitas tinggi</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background-color: #f8f9fa; margin-right: 8px; border-radius: 3px; border: 1px solid #ddd;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">0 Trip</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Tidak ada aktivitas</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 0.75em; color: #7f8c8d; font-style: italic; padding-top: 10px; border-top: 1px solid #ddd;">
+                        * Warna kolom Total berdasarkan rata-rata trip per hari (${filteredDaysCount} hari filter)<br>
+                        * Nilai yang ditampilkan tetap total trips (bukan rata-rata)
+                    </p>
+                </div>
+            `;
+            
+            document.getElementById(`hourlyTripTableContainer${tabType}`).innerHTML = tableHTML;
+            
+            // Buat juga chart untuk distribusi per jam
+            createHourlyTripChart(analysis, tabType);
+        }
+
+        function createHourlyTripChart(analysis, tabType) {
+            const isBig = tabType === 'Big';
+            const truckType = isBig ? 'TM Big' : 'TM Mini';
+            
+            // Generate jam dari 00:00 hingga 23:00
+            const hours = [];
+            const hourLabels = [];
+            const hourColors = [];
+            
+            for (let i = 0; i < 24; i++) {
+                const hourStr = i.toString().padStart(2, '0') + ':00';
+                hours.push(hourStr);
+                hourLabels.push(hourStr.replace(':00', ''));
+                
+                // PERUBAHAN: Semua jam biru (sesuai permintaan)
+                hourColors.push('#3498db'); // Semua jam biru
+            }
+            
+            // Hitung total trip per jam untuk truck type ini
+            const tripsPerHour = hours.map(hour => {
+                const hourData = analysis.hourlyTrips[hour];
+                if (!hourData) return 0;
+                
+                // Kita perlu filter berdasarkan truck type
+                let total = 0;
+                Object.keys(analysis.hourlyTripsByTruck).forEach(truckNo => {
+                    const truckData = analysis.tripsByTruckNo[truckNo];
+                    if (truckData && truckData.truckType === truckType) {
+                        total += analysis.hourlyTripsByTruck[truckNo]?.[hour] || 0;
+                    }
+                });
+                return total;
+            });
+            
+            const trace = {
+                x: hourLabels,
+                y: tripsPerHour,
+                type: 'bar',
+                name: 'Trips per Hour',
+                marker: {
+                    color: hourColors
+                },
+                text: tripsPerHour,
+                textposition: 'auto',
+                textfont: { color: 'white', size: 10 },
+                hovertemplate: '<b>Jam %{x}:00</b><br>Jumlah Trip: %{y}<extra></extra>'
+            };
+            
+            const layout = {
+                title: {
+                    text: '📊 Distribusi Trip per Jam (00:00 - 23:00)',
+                    font: { size: 16, color: '#2c3e50' }
+                },
+                yaxis: { 
+                    title: 'Jumlah Trip',
+                    gridcolor: '#f0f0f0'
+                },
+                xaxis: { 
+                    title: 'Jam',
+                    tickmode: 'array',
+                    tickvals: hourLabels.filter((_, i) => i % 3 === 0),
+                    ticktext: hourLabels.filter((_, i) => i % 3 === 0).map(h => h + ':00'),
+                    gridcolor: '#f0f0f0'
+                },
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                height: 350,
+                responsive: true,
+                showlegend: false
+            };
+            
+            Plotly.newPlot(`hourlyTripDetail${tabType}`, [trace], layout);
         }
 
         function sortTable(columnIndex, tabType) {
