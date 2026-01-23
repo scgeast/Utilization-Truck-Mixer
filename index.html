@@ -603,6 +603,24 @@
             color: white !important;
             font-weight: bold;
         }
+        /* NEW: Warna untuk kolom Total Qty */
+        .qty-cell {
+            text-align: center !important;
+            font-weight: bold !important;
+            padding: 8px 5px !important;
+        }
+        .qty-1 {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+            color: white !important;
+        }
+        .qty-2 {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%) !important;
+            color: white !important;
+        }
+        .qty-3 {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%) !important;
+            color: white !important;
+        }
         /* Responsive Design */
         @media (max-width: 1200px) {
             .chart-section {
@@ -816,6 +834,20 @@
             text-align: center !important;
             font-weight: bold !important;
             padding: 6px 3px !important;
+        }
+        /* NEW: Style untuk tabel yang sangat lebar */
+        .wide-table-container {
+            overflow-x: auto;
+            max-width: 100%;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        .wide-table {
+            min-width: 1500px; /* Lebar minimum untuk tabel banyak kolom */
+            width: 100%;
+            border-collapse: collapse;
         }
     </style>
 </head>
@@ -1764,10 +1796,13 @@
                 uniqueTrucks: { 'TM Big': new Set(), 'TM Mini': new Set() },
                 hourlyTrips: {},
                 hourlyTripsByTruck: {},
-                // NEW: Untuk daily trips
+                // NEW: Untuk daily trips dan qty
                 dailyTripsByTruck: {},
-                tripsByDateAndTruck: {}
+                dailyQtyByTruck: {}, // NEW: Untuk menyimpan total Qty per truck per date
+                tripsByDateAndTruck: {},
+                qtyByDateAndTruck: {} // NEW: Untuk menyimpan Qty per date per truck
             };
+            
             data.forEach(row => {
                 const truckType = row['Truck Type'];
                 const truckNo = row['Truck No'];
@@ -1865,7 +1900,7 @@
                     analysis.hourlyTripsByTruck[truckNo][hourKey]++;
                 }
                 
-                // NEW: Analisis per tanggal
+                // NEW: Analisis per tanggal untuk trips
                 if (!analysis.dailyTripsByTruck[truckNo]) {
                     analysis.dailyTripsByTruck[truckNo] = {};
                 }
@@ -1873,6 +1908,15 @@
                     analysis.dailyTripsByTruck[truckNo][date] = 0;
                 }
                 analysis.dailyTripsByTruck[truckNo][date]++;
+                
+                // NEW: Analisis per tanggal untuk Qty
+                if (!analysis.dailyQtyByTruck[truckNo]) {
+                    analysis.dailyQtyByTruck[truckNo] = {};
+                }
+                if (!analysis.dailyQtyByTruck[truckNo][date]) {
+                    analysis.dailyQtyByTruck[truckNo][date] = 0;
+                }
+                analysis.dailyQtyByTruck[truckNo][date] += qty;
                 
                 // NEW: Data untuk trips by date and truck
                 if (!analysis.tripsByDateAndTruck[date]) {
@@ -1882,6 +1926,15 @@
                     analysis.tripsByDateAndTruck[date][truckNo] = 0;
                 }
                 analysis.tripsByDateAndTruck[date][truckNo]++;
+                
+                // NEW: Data untuk qty by date and truck
+                if (!analysis.qtyByDateAndTruck[date]) {
+                    analysis.qtyByDateAndTruck[date] = {};
+                }
+                if (!analysis.qtyByDateAndTruck[date][truckNo]) {
+                    analysis.qtyByDateAndTruck[date][truckNo] = 0;
+                }
+                analysis.qtyByDateAndTruck[date][truckNo] += qty;
             });
             
             // Calculate totals for trucks
@@ -1929,6 +1982,12 @@
                     value: avgTrips.toFixed(2),
                     raw: avgTrips
                 };
+            }
+            
+            // NEW: Calculate total qty for each truck
+            analysis.totalQtyByTruckNo = {};
+            for (const truckNo in analysis.tripsByTruckNo) {
+                analysis.totalQtyByTruckNo[truckNo] = analysis.qtyByTruckNo[truckNo] || 0;
             }
             
             // NEW: Calculate average distance per trip for each truck number
@@ -2617,6 +2676,14 @@
             return 'avg-trip-day-4';
         }
 
+        // NEW: Function to get qty color class based on total qty
+        function getQtyColorClass(totalQty) {
+            const qty = parseFloat(totalQty);
+            if (qty < 100) return 'qty-1';
+            if (qty < 300) return 'qty-2';
+            return 'qty-3';
+        }
+
         function createHourlyTripTable(analysis, tabType) {
             const isBig = tabType === 'Big';
             const truckType = isBig ? 'TM Big' : 'TM Mini';
@@ -2899,18 +2966,22 @@
             // Sort data dari terbesar ke terkecil berdasarkan total trips
             const truckDataArray = truckNos.map(truckNo => {
                 const totalTrips = analysis.tripsByTruckNo[truckNo]?.trips || 0;
+                const totalQty = analysis.totalQtyByTruckNo[truckNo] || 0;
                 const avgDailyTrips = analysis.avgTripPerDayByTruckNo[truckNo]?.raw || 0;
                 
                 return {
                     truckNo,
                     totalTrips,
+                    totalQty,
                     avgDailyTrips,
-                    dailyData: analysis.dailyTripsByTruck[truckNo] || {}
+                    dailyTripsData: analysis.dailyTripsByTruck[truckNo] || {},
+                    dailyQtyData: analysis.dailyQtyByTruck[truckNo] || {}
                 };
             }).sort((a, b) => b.totalTrips - a.totalTrips);
             
             const sortedTruckNos = truckDataArray.map(item => item.truckNo);
             const sortedTotalTrips = truckDataArray.map(item => item.totalTrips);
+            const sortedTotalQty = truckDataArray.map(item => item.totalQty);
             const sortedAvgDailyTrips = truckDataArray.map(item => item.avgDailyTrips);
             
             // Warna header berdasarkan tipe truck
@@ -2923,15 +2994,18 @@
             const avgHeaderColor = isBig ?
                 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)' :
                 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
+            const qtyHeaderColor = isBig ?
+                'linear-gradient(135deg, #3498db 0%, #2980b9 100%)' :
+                'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)';
             
             // Buat header tabel dengan warna sesuai tipe truck
             let tableHTML = `
-                <div style="overflow-x: auto; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; background-color: white;">
-                    <table class="data-table" style="font-size: 0.7em; width: 100%; border-collapse: collapse;">
+                <div class="wide-table-container">
+                    <table class="wide-table" style="font-size: 0.7em; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th rowspan="2" style="vertical-align: middle; min-width: 40px; text-align: center; background: ${headerColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 8px 5px;">No</th>
-                                <th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: ${headerColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 8px 5px;">Truck No</th>
+                                <th rowspan="2" style="vertical-align: middle; min-width: 40px; text-align: center; background: ${headerColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 8px 5px; position: sticky; left: 0; z-index: 10;">No</th>
+                                <th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: ${headerColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 8px 5px; position: sticky; left: 40px; z-index: 10;">Truck No</th>
             `;
             
             // Tambahkan header tanggal dengan warna gelap
@@ -2952,6 +3026,9 @@
             tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: ${avgHeaderColor}; color: white; border: 1px solid ${isBig ? '#8e44ad' : '#27ae60'}; padding: 8px 5px;">
                     <div>Avg Trip/Day</div>
                 </th>`;
+            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: ${qtyHeaderColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#8e44ad'}; padding: 8px 5px;">
+                    <div>Total Qty (m³)</div>
+                </th>`;
             tableHTML += `</tr>`;
             tableHTML += `</thead><tbody>`;
             
@@ -2961,12 +3038,12 @@
                 const rowBgColor = index % 2 === 0 ? 'background-color: #ffffff;' : 'background-color: #f8f9fa;';
                 
                 tableHTML += `<tr style="${rowBgColor}">
-                    <td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px;">${index + 1}</td>
-                    <td style="font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; background-color: #ecf0f1; text-align: center;">${truckNo}</td>`;
+                    <td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; position: sticky; left: 0; background: ${rowBgColor};">${index + 1}</td>
+                    <td style="font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; background-color: #ecf0f1; text-align: center; position: sticky; left: 40px; background-color: #ecf0f1;">${truckNo}</td>`;
                 
                 let totalTrips = 0;
                 dates.forEach(date => {
-                    const tripCount = truckData.dailyData[date] || 0;
+                    const tripCount = truckData.dailyTripsData[date] || 0;
                     totalTrips += tripCount;
                     
                     // Tentukan class berdasarkan jumlah trip - SESUAI KRITERIA BARU
@@ -2983,34 +3060,47 @@
                 const avgCellClass = getAvgTripDayClass(avgDailyTrips);
                 const avgDisplay = avgDailyTrips.toFixed(2);
                 
+                // Kolom Total Qty dengan warna berdasarkan jumlah total qty
+                const totalQty = sortedTotalQty[index];
+                const qtyCellClass = getQtyColorClass(totalQty);
+                const qtyDisplay = totalQty.toFixed(1);
+                
                 tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'}; padding: 6px 3px;" class="${totalCellClass}">${totalTrips}</td>`;
                 tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#8e44ad' : '#27ae60'}; padding: 6px 3px; font-size: 0.9em;" class="avg-trip-day-cell ${avgCellClass}">${avgDisplay}</td>`;
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#2980b9' : '#8e44ad'}; padding: 6px 3px; font-size: 0.9em;" class="qty-cell ${qtyCellClass}">${qtyDisplay}</td>`;
 
             });
             
             // Tambahkan baris total per tanggal
             tableHTML += `<tr style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white;">
-                <td colspan="2" style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 5px; border-top: 2px solid #ddd;">
+                <td colspan="2" style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 5px; border-top: 2px solid #ddd; position: sticky; left: 0; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
                     <div>TOTAL PER TANGGAL</div>
                 </td>`;
             
-            let grandTotal = 0;
+            let grandTotalTrips = 0;
+            let grandTotalQty = 0;
             dates.forEach(date => {
                 // Hitung total per tanggal untuk truck type ini
-                let dateTotal = 0;
+                let dateTotalTrips = 0;
+                let dateTotalQty = 0;
                 sortedTruckNos.forEach(truckNo => {
                     const truckIndex = sortedTruckNos.indexOf(truckNo);
-                    dateTotal += truckDataArray[truckIndex].dailyData[date] || 0;
+                    dateTotalTrips += truckDataArray[truckIndex].dailyTripsData[date] || 0;
+                    dateTotalQty += truckDataArray[truckIndex].dailyQtyData[date] || 0;
                 });
-                grandTotal += dateTotal;
-                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: rgba(255, 255, 255, 0.1);">${dateTotal}</td>`;
+                grandTotalTrips += dateTotalTrips;
+                grandTotalQty += dateTotalQty;
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: rgba(255, 255, 255, 0.1);">${dateTotalTrips}</td>`;
             });
             
             tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
-                ${grandTotal}
+                ${grandTotalTrips}
             </td>`;
             tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
                 -
+            </td>`;
+            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
+                ${grandTotalQty.toFixed(1)}
             </td>`;
             tableHTML += `</tr>`;
             
@@ -3044,6 +3134,14 @@
                                 <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata trip per hari</span>
                             </div>
                         </div>
+                        <!-- Warna untuk kolom Total Qty -->
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: ${qtyHeaderColor}; margin-right: 8px; border-radius: 3px; border: 1px solid ${isBig ? '#2980b9' : '#8e44ad'};"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Total Qty</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Total volume (m³)</span>
+                            </div>
+                        </div>
                     </div>
                     <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center;">
@@ -3072,6 +3170,29 @@
                             <div>
                                 <span style="font-size: 0.8em; font-weight: bold;">Total/Avg (≥4)</span><br>
                                 <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata ≥ 4 trip/hari</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #2980b9;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Qty (< 100 m³)</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Total volume rendah</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #8e44ad;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Qty (100-300 m³)</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Total volume sedang</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #27ae60;"></div>
+                            <div>
+                                <span style="font-size: 0.8em; font-weight: bold;">Qty (> 300 m³)</span><br>
+                                <span style="font-size: 0.7em; color: #7f8c8d;">Total volume tinggi</span>
                             </div>
                         </div>
                     </div>
@@ -3114,6 +3235,7 @@
                     </div>
                     <p style="margin-top: 15px; font-size: 0.75em; color: #7f8c8d; font-style: italic; padding-top: 10px; border-top: 1px solid #ddd;">
                         * Warna kolom Total & Avg Trip/Day berdasarkan rata-rata trip per hari (${filteredDaysCount} hari filter)<br>
+                        * Warna kolom Total Qty berdasarkan total volume (m³)<br>
                         * Data diurutkan berdasarkan total trips (descending)<br>
                         * Tanggal ditampilkan dalam format DD/MM
                     </p>
