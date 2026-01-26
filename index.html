@@ -621,6 +621,96 @@
             background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%) !important;
             color: white !important;
         }
+        /* NEW: Style untuk wrap text di header */
+        .wrap-header {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            line-height: 1.2 !important;
+            padding: 6px 3px !important;
+        }
+        /* NEW: Style untuk kolom yang lebih rapat */
+        .compact-column {
+            min-width: 50px !important;
+            max-width: 70px !important;
+            padding: 4px 3px !important;
+            font-size: 0.65em !important;
+        }
+        /* NEW: Style untuk kolom rata-rata dan total */
+        .summary-column {
+            min-width: 70px !important;
+            max-width: 80px !important;
+            padding: 5px 4px !important;
+            font-size: 0.7em !important;
+        }
+        /* NEW: Style untuk kolom tanggal */
+        .date-column {
+            min-width: 40px !important;
+            max-width: 50px !important;
+            padding: 4px 2px !important;
+            font-size: 0.65em !important;
+        }
+        /* NEW: Style untuk tabel yang sangat lebar */
+        .wide-table-container {
+            overflow-x: auto;
+            max-width: 100%;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        .wide-table {
+            min-width: 1200px; /* Lebar minimum untuk tabel banyak kolom */
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        /* NEW: Background color untuk kolom No */
+        .no-column-bg {
+            background-color: #ecf0f1 !important;
+            color: #2c3e50 !important;
+            font-weight: bold !important;
+            text-align: center !important;
+        }
+        
+        /* NEW: Spacing untuk chart area dan tabel */
+        .daily-trip-spacing {
+            margin-top: 30px;
+        }
+        
+        /* NEW: Style untuk kolom Avg Trip/Day */
+        .avg-trip-day-cell {
+            text-align: center !important;
+            font-weight: bold !important;
+            padding: 8px 5px !important;
+        }
+        .avg-trip-day-1 {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+            color: white !important;
+        }
+        .avg-trip-day-2 {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+            color: white !important;
+        }
+        .avg-trip-day-3 {
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%) !important;
+            color: white !important;
+        }
+        .avg-trip-day-4 {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%) !important;
+            color: white !important;
+        }
+        /* NEW: Style untuk tabel tanggal */
+        .date-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+            color: white !important;
+            border: 1px solid #2c3e50 !important;
+        }
+        .date-cell {
+            text-align: center !important;
+            font-weight: bold !important;
+            padding: 6px 3px !important;
+        }
+        
         /* Responsive Design */
         @media (max-width: 1200px) {
             .chart-section {
@@ -801,53 +891,29 @@
             .dashboard {
                 margin-top: 5px;
             }
-        }
-        /* NEW: Style untuk kolom Avg Trip/Day */
-        .avg-trip-day-cell {
-            text-align: center !important;
-            font-weight: bold !important;
-            padding: 8px 5px !important;
-        }
-        .avg-trip-day-1 {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
-            color: white !important;
-        }
-        .avg-trip-day-2 {
-            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
-            color: white !important;
-        }
-        .avg-trip-day-3 {
-            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%) !important;
-            color: white !important;
-        }
-        .avg-trip-day-4 {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%) !important;
-            color: white !important;
-        }
-        /* NEW: Style untuk tabel tanggal */
-        .date-header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-            color: white !important;
-            border: 1px solid #2c3e50 !important;
-        }
-        .date-cell {
-            text-align: center !important;
-            font-weight: bold !important;
-            padding: 6px 3px !important;
-        }
-        /* NEW: Style untuk tabel yang sangat lebar */
-        .wide-table-container {
-            overflow-x: auto;
-            max-width: 100%;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: white;
-        }
-        .wide-table {
-            min-width: 1500px; /* Lebar minimum untuk tabel banyak kolom */
-            width: 100%;
-            border-collapse: collapse;
+            /* Responsive untuk tabel daily */
+            .wrap-header {
+                font-size: 0.6em !important;
+                padding: 4px 2px !important;
+            }
+            .compact-column {
+                min-width: 30px !important;
+                max-width: 40px !important;
+                padding: 3px 1px !important;
+                font-size: 0.6em !important;
+            }
+            .summary-column {
+                min-width: 50px !important;
+                max-width: 60px !important;
+                padding: 4px 2px !important;
+                font-size: 0.65em !important;
+            }
+            .date-column {
+                min-width: 30px !important;
+                max-width: 35px !important;
+                padding: 3px 1px !important;
+                font-size: 0.6em !important;
+            }
         }
     </style>
 </head>
@@ -997,7 +1063,7 @@
                             <div id="hourlyTripTableContainerBig" class="table-container" style="margin-top: 20px;"></div>
                         </div>
                         <!-- NEW: Detail Trip per Date Table -->
-                        <div class="chart-section">
+                        <div class="chart-section daily-trip-spacing">
                             <h2>📅 Detail Trip per Date</h2>
                             <div class="chart-container" id="dailyTripDetailBig"></div>
                             <div id="dailyTripTableContainerBig" class="table-container" style="margin-top: 20px;"></div>
@@ -1075,7 +1141,7 @@
                             <div id="hourlyTripTableContainerMini" class="table-container" style="margin-top: 20px;"></div>
                         </div>
                         <!-- NEW: Detail Trip per Date Table for TM Mini -->
-                        <div class="chart-section">
+                        <div class="chart-section daily-trip-spacing">
                             <h2>📅 Detail Trip per Date</h2>
                             <div class="chart-container" id="dailyTripDetailMini"></div>
                             <div id="dailyTripTableContainerMini" class="table-container" style="margin-top: 20px;"></div>
@@ -1227,12 +1293,6 @@
 
         // NEW: Variables for hourly trip table sorting
         let hourlyTripCurrentSort = {
-            'Big': { type: 'totalDesc', activeButton: 'totalDesc' },
-            'Mini': { type: 'totalDesc', activeButton: 'totalDesc' }
-        };
-
-        // NEW: Variables for daily trip table sorting
-        let dailyTripCurrentSort = {
             'Big': { type: 'totalDesc', activeButton: 'totalDesc' },
             'Mini': { type: 'totalDesc', activeButton: 'totalDesc' }
         };
@@ -2762,8 +2822,8 @@
                 const rowBgColor = index % 2 === 0 ? 'background-color: #ffffff;' : 'background-color: #f8f9fa;';
                 
                 tableHTML += `<tr style="${rowBgColor}">
-                    <td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px;">${index + 1}</td>
-                    <td style="font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; background-color: #ecf0f1; text-align: center;">${truckNo}</td>`;
+                    <td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px;" class="no-column-bg">${index + 1}</td>
+                    <td style="font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; background-color: #ecf0f1; text-align: center;" class="no-column-bg">${truckNo}</td>`;
                 
                 let totalTrips = 0;
                 hours.forEach(hour => {
@@ -2934,7 +2994,7 @@
             createHourlyTripChart(analysis, tabType);
         }
 
-        // NEW: Function to create daily trip table
+        // NEW: Function to create daily trip table dengan wrap text dan kolom yang lebih rapat
         function createDailyTripTable(analysis, tabType) {
             const isBig = tabType === 'Big';
             const truckType = isBig ? 'TM Big' : 'TM Mini';
@@ -2984,6 +3044,35 @@
             const sortedTotalQty = truckDataArray.map(item => item.totalQty);
             const sortedAvgDailyTrips = truckDataArray.map(item => item.avgDailyTrips);
             
+            // Simpan data asli untuk filtering
+            const dailyTripData = {
+                sortedTruckNos,
+                truckDataArray,
+                sortedTotalTrips,
+                sortedTotalQty,
+                sortedAvgDailyTrips,
+                dates,
+                truckType
+            };
+            
+            // Render tabel
+            renderDailyTripTable(dailyTripData, tabType);
+            
+            // Buat chart untuk distribusi per tanggal
+            createDailyTripChart(analysis, tabType, dates);
+        }
+
+        // NEW: Function to render daily trip table
+        function renderDailyTripTable(data, tabType) {
+            const isBig = tabType === 'Big';
+            const truckType = data.truckType || (isBig ? 'TM Big' : 'TM Mini');
+            const dates = data.dates;
+            const sortedTruckNos = data.sortedTruckNos;
+            const truckDataArray = data.truckDataArray;
+            const sortedTotalTrips = data.sortedTotalTrips;
+            const sortedTotalQty = data.sortedTotalQty;
+            const sortedAvgDailyTrips = data.sortedAvgDailyTrips;
+            
             // Warna header berdasarkan tipe truck
             const headerColor = isBig ? 
                 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)' : 
@@ -3008,26 +3097,30 @@
                                 <th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: ${headerColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#229954'}; padding: 8px 5px; position: sticky; left: 40px; z-index: 10;">Truck No</th>
             `;
             
-            // Tambahkan header tanggal dengan warna gelap
+            // Tambahkan header tanggal dengan warna gelap dan lebar lebih rapat
             dates.forEach(date => {
                 const dateObj = new Date(date);
                 const day = dateObj.getDate();
                 const month = dateObj.getMonth() + 1;
                 const dateLabel = `${day}/${month}`;
-                tableHTML += `<th style="min-width: 40px; text-align: center; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; border: 1px solid #2c3e50 !important; padding: 8px 3px;" class="date-header">
-                    <div style="font-weight: bold; font-size: 0.85em;">${dateLabel}</div>
+                tableHTML += `<th style="min-width: 40px; max-width: 50px; text-align: center; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; border: 1px solid #2c3e50 !important; padding: 4px 2px;" class="date-header compact-column">
+                    <div style="font-weight: bold; font-size: 0.7em;">${dateLabel}</div>
                 </th>`;
             });
             
-            // PERBAIKAN: Hilangkan teks "Sorted: Total Trips (Descending)"
-            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 60px; text-align: center; background: ${totalHeaderColor}; color: white; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'}; padding: 8px 5px;">
-                    <div>TOTAL</div>
+            // Kolom TOTAL dengan wrap text
+            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 50px; max-width: 60px; text-align: center; background: ${totalHeaderColor}; color: white; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'}; padding: 6px 3px;" class="wrap-header">
+                    <div style="font-weight: bold; font-size: 0.7em;">TOTAL</div>
                 </th>`;
-            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: ${avgHeaderColor}; color: white; border: 1px solid ${isBig ? '#8e44ad' : '#27ae60'}; padding: 8px 5px;">
-                    <div>Avg Trip/Day</div>
+            
+            // Kolom Avg Trip/Day dengan wrap text
+            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 60px; max-width: 70px; text-align: center; background: ${avgHeaderColor}; color: white; border: 1px solid ${isBig ? '#8e44ad' : '#27ae60'}; padding: 6px 3px;" class="wrap-header">
+                    <div style="font-weight: bold; font-size: 0.7em; line-height: 1.1;">Avg<br>Trip/Day</div>
                 </th>`;
-            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 80px; text-align: center; background: ${qtyHeaderColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#8e44ad'}; padding: 8px 5px;">
-                    <div>Total Qty (m³)</div>
+            
+            // Kolom Total Qty dengan wrap text
+            tableHTML += `<th rowspan="2" style="vertical-align: middle; min-width: 60px; max-width: 70px; text-align: center; background: ${qtyHeaderColor}; color: white; border: 1px solid ${isBig ? '#2980b9' : '#8e44ad'}; padding: 6px 3px;" class="wrap-header">
+                    <div style="font-weight: bold; font-size: 0.7em; line-height: 1.1;">Total<br>Qty (m³)</div>
                 </th>`;
             tableHTML += `</tr>`;
             tableHTML += `</thead><tbody>`;
@@ -3038,8 +3131,8 @@
                 const rowBgColor = index % 2 === 0 ? 'background-color: #ffffff;' : 'background-color: #f8f9fa;';
                 
                 tableHTML += `<tr style="${rowBgColor}">
-                    <td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; position: sticky; left: 0; background: ${rowBgColor};">${index + 1}</td>
-                    <td style="font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; background-color: #ecf0f1; text-align: center; position: sticky; left: 40px; background-color: #ecf0f1;">${truckNo}</td>`;
+                    <td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; position: sticky; left: 0; background: ${rowBgColor};" class="no-column-bg">${index + 1}</td>
+                    <td style="font-weight: bold; border: 1px solid #ddd; padding: 6px 3px; background-color: #ecf0f1; text-align: center; position: sticky; left: 40px; background-color: #ecf0f1;" class="no-column-bg">${truckNo}</td>`;
                 
                 let totalTrips = 0;
                 dates.forEach(date => {
@@ -3049,7 +3142,7 @@
                     // Tentukan class berdasarkan jumlah trip - SESUAI KRITERIA BARU
                     const cellClass = getTripCountClass(tripCount);
                     
-                    tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 6px 3px;" class="${cellClass}">${tripCount}</td>`;
+                    tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #ddd; padding: 4px 2px; font-size: 0.65em;" class="date-column ${cellClass}">${tripCount}</td>`;
                 });
                 
                 // Kolom Total dengan warna berdasarkan rata-rata trip per hari
@@ -3065,16 +3158,21 @@
                 const qtyCellClass = getQtyColorClass(totalQty);
                 const qtyDisplay = totalQty.toFixed(1);
                 
-                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'}; padding: 6px 3px;" class="${totalCellClass}">${totalTrips}</td>`;
-                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#8e44ad' : '#27ae60'}; padding: 6px 3px; font-size: 0.9em;" class="avg-trip-day-cell ${avgCellClass}">${avgDisplay}</td>`;
-                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#2980b9' : '#8e44ad'}; padding: 6px 3px; font-size: 0.9em;" class="qty-cell ${qtyCellClass}">${qtyDisplay}</td>`;
+                // Kolom TOTAL
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'}; padding: 6px 3px; font-size: 0.75em;" class="summary-column ${totalCellClass}">${totalTrips}</td>`;
+                
+                // Kolom Avg Trip/Day
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#8e44ad' : '#27ae60'}; padding: 6px 3px; font-size: 0.75em;" class="summary-column ${avgCellClass}">${avgDisplay}</td>`;
+                
+                // Kolom Total Qty
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid ${isBig ? '#2980b9' : '#8e44ad'}; padding: 6px 3px; font-size: 0.75em;" class="summary-column ${qtyCellClass}">${qtyDisplay}</td>`;
 
             });
             
             // Tambahkan baris total per tanggal
             tableHTML += `<tr style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white;">
                 <td colspan="2" style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 5px; border-top: 2px solid #ddd; position: sticky; left: 0; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
-                    <div>TOTAL PER TANGGAL</div>
+                    <div style="font-size: 0.75em;">TOTAL PER TANGGAL</div>
                 </td>`;
             
             let grandTotalTrips = 0;
@@ -3090,162 +3188,23 @@
                 });
                 grandTotalTrips += dateTotalTrips;
                 grandTotalQty += dateTotalQty;
-                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: rgba(255, 255, 255, 0.1);">${dateTotalTrips}</td>`;
+                tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 4px 2px; border-top: 2px solid #ddd; background: rgba(255, 255, 255, 0.1); font-size: 0.65em;">${dateTotalTrips}</td>`;
             });
             
-            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
+            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 6px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); font-size: 0.75em;">
                 ${grandTotalTrips}
             </td>`;
-            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
+            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 6px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); font-size: 0.75em;">
                 -
             </td>`;
-            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 8px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
+            tableHTML += `<td style="text-align: center; font-weight: bold; border: 1px solid #2c3e50; padding: 6px 3px; border-top: 2px solid #ddd; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); font-size: 0.75em;">
                 ${grandTotalQty.toFixed(1)}
             </td>`;
             tableHTML += `</tr>`;
             
             tableHTML += `</tbody></table></div>`;
             
-            // Tambahkan legenda dengan penjelasan warna
-            tableHTML += `
-                <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; border-left: 4px solid ${isBig ? '#3498db' : '#27ae60'};">
-                    <p style="font-size: 0.85em; color: #2c3e50; margin-bottom: 10px; font-weight: bold;">📅 LEGENDA WARNA - ${truckType} (Daily):</p>
-                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #2c3e50;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Header Tanggal</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Semua tanggal</span>
-                            </div>
-                        </div>
-                        <!-- Warna untuk kolom Total -->
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: ${totalHeaderColor}; margin-right: 8px; border-radius: 3px; border: 1px solid ${isBig ? '#c0392b' : '#e67e22'};"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Total Header</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Kolom total trips</span>
-                            </div>
-                        </div>
-                        <!-- Warna untuk kolom Avg Trip/Day -->
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: ${avgHeaderColor}; margin-right: 8px; border-radius: 3px; border: 1px solid ${isBig ? '#8e44ad' : '#27ae60'};"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Avg Trip/Day</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata trip per hari</span>
-                            </div>
-                        </div>
-                        <!-- Warna untuk kolom Total Qty -->
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: ${qtyHeaderColor}; margin-right: 8px; border-radius: 3px; border: 1px solid ${isBig ? '#2980b9' : '#8e44ad'};"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Total Qty</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Total volume (m³)</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #c0392b;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Total/Avg (< 2)</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata < 2 trip/hari</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #e67e22;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Total/Avg (2)</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata = 2 trip/hari</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #f39c12;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Total/Avg (3)</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata = 3 trip/hari</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #27ae60 0%, #229954 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #229954;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Total/Avg (≥4)</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Rata-rata ≥ 4 trip/hari</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #2980b9;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Qty (< 100 m³)</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Total volume rendah</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #8e44ad;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Qty (100-300 m³)</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Total volume sedang</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); margin-right: 8px; border-radius: 3px; border: 1px solid #27ae60;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">Qty (> 300 m³)</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Total volume tinggi</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background-color: #e74c3c; margin-right: 8px; border-radius: 3px; border: 1px solid #c0392b;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">1 Trip</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Rendah</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background-color: #f39c12; margin-right: 8px; border-radius: 3px; border: 1px solid #e67e22;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">2 Trips</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Sedang</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background-color: #f1c40f; margin-right: 8px; border-radius: 3px; border: 1px solid #f39c12;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">3 Trips</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Baik</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background-color: #27ae60; margin-right: 8px; border-radius: 3px; border: 1px solid #229954;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">4+ Trips</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Sangat Baik</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background-color: #f8f9fa; margin-right: 8px; border-radius: 3px; border: 1px solid #ddd;"></div>
-                            <div>
-                                <span style="font-size: 0.8em; font-weight: bold;">0 Trip</span><br>
-                                <span style="font-size: 0.7em; color: #7f8c8d;">Tidak ada</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="margin-top: 15px; font-size: 0.75em; color: #7f8c8d; font-style: italic; padding-top: 10px; border-top: 1px solid #ddd;">
-                        * Warna kolom Total & Avg Trip/Day berdasarkan rata-rata trip per hari (${filteredDaysCount} hari filter)<br>
-                        * Warna kolom Total Qty berdasarkan total volume (m³)<br>
-                        * Data diurutkan berdasarkan total trips (descending)<br>
-                        * Tanggal ditampilkan dalam format DD/MM
-                    </p>
-                </div>
-            `;
-            
             document.getElementById(`dailyTripTableContainer${tabType}`).innerHTML = tableHTML;
-            
-            // Buat chart untuk distribusi per tanggal
-            createDailyTripChart(analysis, tabType, dates);
         }
 
         // NEW: Function to create daily trip chart
@@ -3789,7 +3748,7 @@
 
                 tableHTML += `
                     <tr>
-                        <td>${index + 1}</td>
+                        <td class="no-column-bg">${index + 1}</td>
                         <td>${allocation.truckType}</td>
                         <td>${allocation.truckNo}</td>
                         <td>${allocation.plantAllocation}</td>
